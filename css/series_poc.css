@@ -1,0 +1,463 @@
+
+.search-results ul.ting-object-tree {
+    padding-left: 0px;
+    margin-right: -12px;
+}
+
+
+.ting-object-tree-item {
+    display: inline-block;
+    width: 172px;
+    margin: auto;
+    min-height: 375px;
+}
+
+.ting-object-tree-item h2 {
+    font-family: FaktPro-Normal,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0px;
+    color: #000000;
+    padding-top: 7px;
+}
+
+.ting-object-tree-item .field-name-ting-author {
+    color: #000000;
+    font-family: FaktPro-SemiBold,sans-serif;
+}
+
+.ting-object-tree {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+/* .ting-object-tree::after {
+    content: "";
+    flex: auto;
+  } */
+
+.ting-object-tree-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    background: linear-gradient(rgba(255,138,0,.2),#fff);
+    padding-top: 20px;
+    padding-bottom: 20px;
+        
+}
+
+.ting-object-tree-link {
+    display: inline-block;
+    width: 194px;
+    margin: auto;
+}
+
+.ting-object-tree-link a {
+    font-size: 18px;
+    color: #006a97;
+    text-transform: capitalize;
+        
+}
+
+.ting-object-tree-links h2 {
+    display: block;
+}
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+
+/* 
+    Created on : 11-05-2019, 15:13:10
+    Author     : DQ26525
+*/
+
+.ting-object-tree-page .ting-object-tree-item, .ting-object-tree .ting-object-tree-item {
+    display: inline-block;
+    width: 194px;
+    margin: auto;
+    min-height: 375px;
+}
+
+.ting-object-tree .ting-object-tree-item .view-mode-teaser .inner {
+    background-image: url(./images/defbookcover.jpg);
+}
+
+.ting-object-tree-item h2 {
+    font-family: FaktPro-Light, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0px;
+    color: #000000;
+    padding-top: 7px;
+}
+
+.ting-object-tree-item .field-name-ting-author {
+    color: #000000;
+    font-family: FaktPro-SemiBold, sans-serif;
+    font-size: 14px;
+}
+
+.ting-object-tree {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-left: 0px;
+}
+
+.ting-object-tree-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    background: linear-gradient(rgba(255, 138, 0, .2), #fff);
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.ting-object-tree-link {
+    display: inline-block;
+    width: 194px;
+    margin: auto;
+}
+
+.ting-object-tree-link a {
+    font-size: 18px;
+    color: #006a97;
+    text-transform: capitalize;
+}
+
+.ting-object-tree-main h2 {
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
+}
+
+.ting-object-tree-item h2 {
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
+}
+
+.ting-object-tree-breadcrumb {
+    margin-bottom: 20px;
+}
+
+.ting-object-tree-breadcrumb-icon::after {
+    content: "\e903";
+    font-family: icomoon;
+    font-size: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+    top: 4px;
+    position: relative;
+    top: -2px;
+}
+
+.ting-object-tree-links h2 {
+    display: block;
+}
+
+.ting-object-tree-page .secondary-content {
+    width: 18.6726%;
+    float: left;
+    display: block;
+    margin-right: 2.4911%;
+}
+
+.ting-object-tree-page .ting-object-tree-main {
+    width: 78.8363%;
+    float: right;
+}
+
+.ting-object-tree-page ul {
+    padding-left: 0px;
+}
+
+.node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .secondary-content {
+    width: 21.6726%;
+}
+
+.node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
+    width: 75.8363%;
+}
+
+/* Menu */
+
+.ting-object-tree-menu ul.menu li.expanded ul.menu {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+.ting-object-tree-menu ul.menu li {
+    margin-bottom: 20px;
+}
+
+.ting-object-tree-menu .sub-menu-title {
+    padding-bottom: 25px;
+    font-size: 32px;
+}
+
+.ting-object-tree-menu ul.menu li.collapsed::after {
+    content: "\e903";
+    font-family: icomoon;
+    font-size: 14px;
+    left: 0;
+    display: block;
+    top: -4px;
+    float: left;
+    margin-right: 12px;
+}
+
+.ting-object-tree-menu ul.menu li a.active {
+    position: relative;
+    padding-left: 20px;
+    border-bottom: 4px solid #B28282;
+    padding-bottom: 5px;
+}
+
+/* Smart carousel pages */
+
+.node-type-inspiration-carousel h2.pane-title {
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
+}
+
+.node-type-inspiration-carousel .pane-ting-smart-carousel-content h2.pane-title {
+    border-bottom: none;
+    font-size: 28px;
+    line-height: 28px;
+}
+
+.pane-ting-smart-carousel-objects {
+    margin-top: 17px;
+}
+
+.pane-ting-smart-carousel-content {
+    padding-left: 10px;
+}
+
+.node-type-inspiration-carousel .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
+    width: 194px;
+    margin-right: 20px;
+}
+
+.node-type-inspiration-carousel .ding-carousel-item .field-name-ting-author {
+    font-size: 14px;
+}
+
+.node-type-inspiration-carousel .field-name-ting-title h2 {
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
+}
+
+.node-type-inspiration-carousel .pane-carousel .ding-carousel .slick-slider {
+    min-height: 380px;
+}
+
+/* Mobile categories */
+
+.ting-object-tree-mobile-categories {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .ting-object-tree-mobile-categories {
+        display: block;
+        margin-top: 0px;
+    }
+    .pane-content .ting-object-tree-page .secondary-content {
+        display: none;
+    }
+    .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .secondary-content {
+        display: none;
+    }
+    .pane-content .ting-object-tree-page .ting-object-tree-main {
+        width: 100%;
+        float: none;
+        margin-top: -20px;
+    }
+    .ting-object-tree-mobile-categories .more-link a {
+        float: none;
+        margin-bottom: 15px;
+        display: block;
+        width: 100%;
+    }
+    .ting-object-tree-mobile-categories .more-link a::after {
+        display: block;
+        content: "\e901";
+        color: #ffffff;
+    }
+    .pane-content .ting-object-tree-main .pane-title {
+        margin-top: 40px;
+        font-size: 40px;
+        color: #006a97;
+    }
+    .node-type-inspiration-carousel .primary-content {
+        margin-top: -20px;
+    }
+    .node-type-inspiration-carousel .pane-node-content h2.pane-title {
+        margin-top: 40px;
+        font-size: 40px;
+    }
+    .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
+        width: 100%;
+    }
+}
+
+/* Prev and next buttons */
+
+.ting-object-tree-pager .more-link a::after {
+    color: #ffffff;
+}
+
+.ting-object-tree-objects-previous {
+    float: left;
+    margin-right: 30px;
+}
+
+.ting-object-tree-pager .ting-object-tree-objects-previous a {
+    padding-left: 80px;
+    padding-right: 15px;
+}
+
+.ting-object-tree-pager .more-link {
+    clear: none;
+}
+
+.ting-object-tree-pager .ting-object-tree-objects-previous a::after {
+    display: none;
+}
+
+.ting-object-tree-pager .ting-object-tree-objects-previous a::before {
+    content: "\e902";
+    font-family: icomoon;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    font-size: 54px;
+    display: block;
+    position: absolute;
+    top: 17px;
+    left: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+    .ting-object-tree-pager .more-link a {
+        width: 130px;
+        margin-right: 20px;
+    }
+    .ting-object-tree-pager .more-link a::after {
+        display: block;
+    }
+    .ting-object-tree-pager .ting-object-tree-objects-previous a::after {
+        display: none;
+    }
+    .ting-object-tree-pager .ting-object-tree-objects-previous a {
+        padding-left: 60px;
+    }
+    .ting-object-tree-pager .ting-object-tree-objects-previous a::before {
+        left: 0px;
+    }
+    .ting-object-tree-pager .more-link a::after {
+        left: 70px;
+    }
+}
+
+/* Mobile */
+
+@media only screen and (max-width: 768px) {
+    .ting-object-tree-page .ting-object-tree-item {
+        width: 154px;
+        min-height: 300px;
+    }
+    .ting-object-tree .ting-object-tree-item {
+        width: 154px;
+        min-height: 300px;
+    }
+    .node-type-inspiration-carousel .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
+        width: 154px;
+    }
+    .pane-ting-smart-carousel-content {
+        margin-bottom: 20px;
+    }
+    .ting-object-tree-breadcrumb {
+        border-bottom: 1px solid rgba(38, 38, 38, .2);
+    }
+}
+
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 5px 7px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: #777;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+.ting-object-tree-item .ting-object.view-mode-teaser>.inner .ting-cover {
+    overflow: inherit;
+}
+
+.ting-object-tree-item  .ting-object.view-mode-teaser > .inner {
+    padding-top: 143%;
+}
+
+.ting-object-tree-search-controls {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+    margin-bottom: 5px;
+    min-height: 75px;
+}
+
+.ting-object-tree-filter-links {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 28%;
+    padding-top: 36px;
+}
+
+.ting-object-tree-filter-links .badge {
+    margin-left: 0px;
+    padding-left: 5px;
+}
+
+.ting-object-tree-filter-select {
+    border-bottom: 4px solid #B28282;
+}
+
+.ting-object-tree-object-breadcrumb\>\<a.href\= {
+    margin-bottom: 2px;
+}
+
+.ting-object-tree-button {
+	display: flex;
+    justify-content: space-between;
+    background-color: #f3f3f3;
+    height: 44px;
+    border-radius: 10px;
+    font-size: 18px;
+    padding: 15px 25px 14px 25px;
+    margin-right: 20px;
+    align-items: center;
+}
+
+.ting-object-tree-search-buttons {
+    width: 48%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 10px;
+}
+
+.ting-object-tree-button img {
+    display: inline;
+    height: 30px;
+    margin-left: 20px;
+}
+

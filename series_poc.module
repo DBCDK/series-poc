@@ -1,0 +1,359 @@
+<?php //
+
+/**
+ * @file
+ * Enables search and navigation using simple navigation api.
+ */
+
+
+
+function series_poc_menu()
+{
+  $items = array();
+
+  $items['serier/%'] = array(
+    'title' => 'Series',
+    'page callback' => 'series_poc_search',
+    'access arguments' => array('access content'),
+  );
+
+  $items['serier/%/%'] = array(
+    'title' => 'Series',
+    'page callback' => 'series_poc_search',
+    'access arguments' => array('access content'),
+  );
+
+  $items['serier'] = array(
+    'title' => 'Series',
+    'page callback' => 'series_poc_search',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+
+
+function series_poc_theme($existing, $type, $theme, $path)
+{
+  return array(
+    // 'series_poc_covers' => array(
+    //   'variables' => array('results' => NULL),
+    //   'template' => 'covers-search-result',
+    //   'path' => $path . '/templates',
+    // ),
+    // 'series_poc_item' => array(
+    //   'variables' => array(
+    //     'title' => NULL,
+    //     'creators' => NULL,
+    //     'cover' => NULL,
+    //   ),
+    //   'template' => 'ting-simple-search-item',
+    //   'path' => $path . '/templates',
+    // ),
+
+    'series_poc_page' => array(
+      'variables' => array(
+        'items' => NULL,
+        'breadcrumb' => NULL,
+        'menu' => NULL,
+      ),
+      'template' => 'series-poc-page',
+      'path' => $path . '/templates',
+    ),
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * It simply tells panels where to find the .inc files that define various
+ * args, contexts, content_types.
+ */
+function series_poc_ctools_plugin_directory($module, $plugin)
+{
+  if ($module == 'ctools' && !empty($plugin)) {
+    return "plugins/$plugin";
+  }
+}
+
+function series_poc_search()
+{
+  $category = '';
+  $parameters = drupal_get_query_parameters();
+
+  // if (isset($parameters['searchquery'])) {
+  //   $searchquery = 'q=' . $parameters['searchquery'];
+  //   $key = $parameters['searchquery'];
+  // }
+
+  // if (isset($parameters['category'])) {
+  //   $category = '&category=' . $parameters['category'];
+  //   $category_id = $parameters['category'];
+  // }
+
+  // if (isset($parameters['filters'])) {
+  //   $filter = '&category=' . $parameters['filters'];
+  // }
+
+
+  //$results = series_poc_request($parameters_with_filters);
+  //$objects = series_poc_process_results($results);
+
+  $items = 'items';//array();
+  // //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple15.txt", print_r($parameters, TRUE), FILE_APPEND);
+  // foreach ($objects as $object) {
+  //   $cover = series_poc_render_cover($object);
+  //   $items[] = theme('series_poc_item', array('title' => $object->title, 'creators' => $object->creators, 'cover' => $cover));
+  // }
+  // $items = series_poc_fill_items($items, $results);
+  // $items = theme('series_poc_covers', array('results' => $items));
+  $universe =  series_poc_get_universe("Michael Connellys krimi-univers");
+  $series = series_poc_get_series("Harry Potter");
+  $work = series_poc_get_work('870970-basis:53051049');
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series3.txt", print_r($work  , TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series4.txt", print_r($work->work_metadata->type , TRUE), FILE_APPEND);
+
+
+  //$menu_links = series_poc_get_menu_links($key, $facets);
+  $menu = 'menu'; //drupal_render($menu_links);
+  
+  $bread_crumb = '';//series_poc_get_breadcrumb($category_id, $key);
+
+  drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
+  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',  ));
+}
+
+
+
+
+
+
+function series_poc_process_results($results)
+{
+  $objects = array();
+  foreach ($results->response->docs as $result_object) {
+    $object = new SimpleSearchObject();
+    $object->id = $result_object->pid;
+    $object->title = $result_object->title;
+    if (isset($result_object->creator)) {
+      $object->creators = $result_object->creator[0];
+    } else {
+      $object->creators = '';
+    }
+    $object->pids = $result_object->pid;
+    if (isset($object->language)) {
+      $object->language = $result_object->language;
+    }
+    $objects[$object->id] = $object;
+  }
+  return $objects;
+}
+
+
+
+function series_poc_render_cover($object)
+{
+  $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ting_search_carousel')));
+  $options = array(
+    'html' => TRUE,
+    'attributes' => array('title' => $object->title),
+  );
+
+  return l($image, 'ting/collection/' . $object->id, $options);
+}
+
+
+
+function series_poc_request($action, $parameters)
+{
+  $service_url = 'https://series-poc.demo.dbc.dk/';
+  $service_url .= $action . '?' . $parameters;
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series2.txt", print_r($service_url  , TRUE), FILE_APPEND);
+  $curl = curl_init($service_url);
+  curl_setopt(
+    $curl,
+    CURLOPT_HTTPHEADER,
+    array(
+      'Content-Type: application/json',
+      'Accept: application/json'
+    )
+  );
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  $curl_response = curl_exec($curl);
+  if ($curl_response === false) {
+    $info = curl_getinfo($curl);
+    curl_close($curl);
+  }
+  curl_close($curl);
+  $decoded = json_decode($curl_response);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple3.txt", print_r($decoded, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple6.txt", print_r($curl_response, TRUE), FILE_APPEND);
+  if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
+    //TODO Handle error
+  }
+  return  $decoded;
+}
+
+// function series_poc_process_facets($results)
+// {
+//   $facets = array();
+//   foreach ($results->response->facets as $facet) {
+//     $facets[$facet[0]] = $facet[1];
+//   }
+//   //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple7.txt", print_r($facets, TRUE), FILE_APPEND);
+//   return $facets;
+// }
+
+function series_poc_get_universe($title)
+{
+  $parameters = 'title=' . rawurlencode( $title);
+   $results = series_poc_request('universe', $parameters);
+   if (isset($results->statusCode)) {
+     return null;
+   } else {
+     return $results;
+   }
+   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($results , TRUE), FILE_APPEND);
+}
+
+function series_poc_get_series($title)
+{
+  $parameters = 'title=' . rawurlencode( $title);
+   $results = series_poc_request('series', $parameters);
+   file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results , TRUE), FILE_APPEND);
+   if (isset($results->statusCode)) {
+     return null;
+   } else {
+     return $results;
+   }
+}
+
+function series_poc_get_work($pid)
+{
+  $parameters = 'workid=' . $pid;
+   $results = series_poc_request('pid', $parameters);
+   file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results , TRUE), FILE_APPEND);
+   if (isset($results->statusCode)) {
+     return null;
+   } else {
+     return $results;
+   }
+}
+
+function series_poc_get_menu_links($key, $facets)
+{
+  $menu_data = menu_tree_page_data('menu-menu-simple-navigation', 3, TRUE);
+  $menu_links = menu_tree_output($menu_data);
+
+  foreach ($menu_links as $menu_key => $menu_item) {
+    if (!(substr_compare($menu_key, '#', 0, strlen('#')) === 0)) {
+      $menu_links[$menu_key] = series_poc_handle_menu_link($menu_item, $key, $menu_key, $facets);
+    }
+  }
+
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/search1.txt", print_r($menu_data, TRUE), FILE_APPEND);
+  return $menu_links;
+}
+
+function series_poc_handle_menu_link($menu_item, $key, $menu_key, $facets)
+{
+  $category = $menu_item['#localized_options']['query']['category'];
+  if (array_key_exists($category,  $facets)) {
+    $menu_item['#title'] .= '<span class="badge"> ' . $facets[$category] . '</span>';
+  }
+  if (isset($key)) {
+    $menu_item['#localized_options']['query']['searchquery'] = $key;
+  }
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/search12.txt", print_r($menu_item, TRUE), FILE_APPEND);
+  if (!empty($menu_item['#below'])) {
+    foreach ($menu_item['#below'] as $menu_key =>  $menu_item_below) {
+      if (!(substr_compare($menu_key, '#', 0, strlen('#')) === 0)) {
+        $menu_item['#below'][$menu_key]  = series_poc_handle_menu_link($menu_item_below, $key, $menu_key, $facets);
+      }
+    }
+  }
+  return $menu_item;
+}
+
+// function series_poc_get_hierarchy()
+// {
+//   $data = variable_get('series_poc_hierarchies', null);
+//   if (isset($data)) {
+//     return $data;
+//   } else {
+//     $path = drupal_get_path('module', 'series_poc') . '/data/hierarchies.txt';
+//     $data = file_get_contents($path);
+//     variable_set('series_poc_hierarchies', unserialize($data));
+//     return unserialize($data);
+//   }
+// }
+
+function series_poc_get_breadcrumb($category_id, $key)
+{
+  $options = array('query' => array());
+  if (isset($key)) {
+    $options['query']['searchquery'] = $key;
+  }
+  $links = array();
+  //$hierarchy = series_poc_get_hierarchy();
+
+  $links[] = l('Søgning', '/søgning', $options);
+
+  if (isset($hierarchy[$category_id])) {
+    $category = $hierarchy[$category_id];
+    if (isset($category['parents'])) {
+      foreach ($category['parents'] as $parent) {
+        $links[] = series_poc_get_breadcrumb_url($parent, $options);
+      }
+    }
+    $links[] = series_poc_get_breadcrumb_url($category_id, $options);
+  }
+
+
+  if (isset($key)) {
+    $links[] = '<span class="simple-navigation-breadcrumb-key">' . $key . '</span>';
+  }
+
+
+  $bread_crumb = implode('<span class="ting-object-tree-breadcrumb-icon"></span>', $links);
+  return $bread_crumb;
+}
+
+function series_poc_get_breadcrumb_url($category_id, $options)
+{
+  $menu_data = menu_load_links('menu-menu-simple-navigation');
+  foreach ($menu_data as $menu_link) {
+    if (isset($menu_link['options']) && isset($menu_link['options']['query'])) {
+      if (isset($menu_link['options']['query']['category']) && $menu_link['options']['query']['category'] == $category_id) {
+        $options['query']['category'] = $category_id;
+        return l($menu_link['link_title'], $menu_link['link_path'], $options);
+      }
+    }
+  }
+  return null;
+}
+
+
+class SimpleSearchObject
+{
+  public $title;
+  public $creators;
+  public $id;
+  public $pids;
+  public $language;
+  public $pid_details;
+  public $count = 0;
+  public $hit = true;
+  public $number_in_searches = array();
+
+  public function getCreators()
+  {
+    return array($this->creators);
+  }
+
+  public function getTitle()
+  {
+    return $this->title;
+  }
+}
