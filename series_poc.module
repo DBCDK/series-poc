@@ -100,7 +100,7 @@ function series_poc_search()
   //$results = series_poc_request($parameters_with_filters);
   //$objects = series_poc_process_results($results);
 
-  $items = 'items';//array();
+  $items = 'items'; //array();
   // //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple15.txt", print_r($parameters, TRUE), FILE_APPEND);
   // foreach ($objects as $object) {
   //   $cover = series_poc_render_cover($object);
@@ -108,20 +108,23 @@ function series_poc_search()
   // }
   // $items = series_poc_fill_items($items, $results);
   // $items = theme('series_poc_covers', array('results' => $items));
-  $universe =  series_poc_get_universe("Michael Connellys krimi-univers");
-  $series = series_poc_get_series("Harry Potter");
-  $work = series_poc_get_work('870970-basis:53051049');
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series3.txt", print_r($work  , TRUE), FILE_APPEND);
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series4.txt", print_r($work->work_metadata->type , TRUE), FILE_APPEND);
+
+  // $universe =  series_poc_get_universe("Michael Connellys krimi-univers");
+  // $series = series_poc_get_series("Harry Potter");
+  // $work = series_poc_get_work('870970-basis:53051049');
+  // file_put_contents("/var/www/drupalvm/drupal/web/debug/series3.txt", print_r($work  , TRUE), FILE_APPEND);
+  // file_put_contents("/var/www/drupalvm/drupal/web/debug/series4.txt", print_r($work->work_metadata->type , TRUE), FILE_APPEND);
+  $series = series_poc_get_works_in_series("Harry Potter");
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
 
 
   //$menu_links = series_poc_get_menu_links($key, $facets);
   $menu = 'menu'; //drupal_render($menu_links);
-  
-  $bread_crumb = '';//series_poc_get_breadcrumb($category_id, $key);
+
+  $bread_crumb = ''; //series_poc_get_breadcrumb($category_id, $key);
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
-  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',  ));
+  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
 }
 
 
@@ -169,7 +172,7 @@ function series_poc_request($action, $parameters)
 {
   $service_url = 'https://series-poc.demo.dbc.dk/';
   $service_url .= $action . '?' . $parameters;
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series2.txt", print_r($service_url  , TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series2.txt", print_r($service_url, TRUE), FILE_APPEND);
   $curl = curl_init($service_url);
   curl_setopt(
     $curl,
@@ -195,6 +198,46 @@ function series_poc_request($action, $parameters)
   return  $decoded;
 }
 
+function series_poc_multi_request($action, $parameters)
+{
+  $requests = [];
+  foreach ($parameters as $parameter) {
+    $service_url = 'https://series-poc.demo.dbc.dk/';
+    $service_url .= $action . '?' . $parameter;
+    $requests[] = buildCurlRequest($service_url);
+  }
+  try {
+    $results = curl_multi($requests);
+    $decoded_results = [];
+    foreach ($results as $result) {
+      $decoded_results[] = json_decode($result);
+    }
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series9.txt", print_r($results, TRUE), FILE_APPEND);
+    return $decoded_results;
+  } catch (Exception $e) {
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
+  }
+}
+
+function buildCurlRequest($url)
+{
+  $curl_session = array();
+  $curl_session['endpoint'] = $url;
+  // Array of cURL options. See the documentation for curl_setopt for 
+  // details on what options are available.
+
+  $curl_options = array(
+    CURLOPT_RETURNTRANSFER => TRUE,
+    CURLOPT_HTTPHEADER => array(
+      'Content-Type: application/json',
+      'Accept: application/json'
+    )
+  );
+
+  $curl_session['options'] = $curl_options;
+  return $curl_session;
+}
+
 // function series_poc_process_facets($results)
 // {
 //   $facets = array();
@@ -207,38 +250,60 @@ function series_poc_request($action, $parameters)
 
 function series_poc_get_universe($title)
 {
-  $parameters = 'title=' . rawurlencode( $title);
-   $results = series_poc_request('universe', $parameters);
-   if (isset($results->statusCode)) {
-     return null;
-   } else {
-     return $results;
-   }
-   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($results , TRUE), FILE_APPEND);
+  $parameters = 'title=' . rawurlencode($title);
+  $results = series_poc_request('universe', $parameters);
+  if (isset($results->statusCode)) {
+    return null;
+  } else {
+    return $results;
+  }
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($results , TRUE), FILE_APPEND);
 }
 
 function series_poc_get_series($title)
 {
-  $parameters = 'title=' . rawurlencode( $title);
-   $results = series_poc_request('series', $parameters);
-   file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results , TRUE), FILE_APPEND);
-   if (isset($results->statusCode)) {
-     return null;
-   } else {
-     return $results;
-   }
+  $parameters = 'title=' . rawurlencode($title);
+  $results = series_poc_request('series', $parameters);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results, TRUE), FILE_APPEND);
+  if (isset($results->statusCode)) {
+    return null;
+  } else {
+    return $results;
+  }
+}
+
+function series_poc_get_works_in_series($title)
+{
+  $parameters = [];
+  $objects = [];
+  $series = series_poc_get_series($title);
+  if (isset($series) && isset($series->pids)) {
+    $startTime = explode(' ', microtime());
+    foreach ($series->pids as $pid) {
+      $parameters[] = 'workid=' . $pid;
+    }
+    $results = series_poc_multi_request('pid', $parameters);
+    $stopTime = explode(' ', microtime());
+    $time = floatval(($stopTime[1] + $stopTime[0]) - ($startTime[1] + $startTime[0]));
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series8.txt", print_r($time, TRUE), FILE_APPEND);
+    if (isset($results)) {
+      $series->objects = $results;
+    }
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series6.txt", print_r($results, TRUE), FILE_APPEND);
+  }
+  return $series;
 }
 
 function series_poc_get_work($pid)
 {
   $parameters = 'workid=' . $pid;
-   $results = series_poc_request('pid', $parameters);
-   file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results , TRUE), FILE_APPEND);
-   if (isset($results->statusCode)) {
-     return null;
-   } else {
-     return $results;
-   }
+  $results = series_poc_request('pid', $parameters);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results, TRUE), FILE_APPEND);
+  if (isset($results->statusCode)) {
+    return null;
+  } else {
+    return $results;
+  }
 }
 
 function series_poc_get_menu_links($key, $facets)

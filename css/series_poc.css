@@ -1,18 +1,18 @@
 
-.search-results ul.ting-object-tree {
+.search-results ul.series_poc {
     padding-left: 0px;
     margin-right: -12px;
 }
 
 
-.ting-object-tree-item {
+.series_poc-item {
     display: inline-block;
     width: 172px;
     margin: auto;
     min-height: 375px;
 }
 
-.ting-object-tree-item h2 {
+.series_poc-item h2 {
     font-family: FaktPro-Normal,sans-serif;
     font-size: 14px;
     line-height: 20px;
@@ -21,23 +21,23 @@
     padding-top: 7px;
 }
 
-.ting-object-tree-item .field-name-ting-author {
+.series_poc-item .field-name-ting-author {
     color: #000000;
     font-family: FaktPro-SemiBold,sans-serif;
 }
 
-.ting-object-tree {
+.series_poc {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
 }
 
-/* .ting-object-tree::after {
+/* .series_poc::after {
     content: "";
     flex: auto;
   } */
 
-.ting-object-tree-links {
+.series_poc-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -47,20 +47,20 @@
         
 }
 
-.ting-object-tree-link {
+.series_poc-link {
     display: inline-block;
     width: 194px;
     margin: auto;
 }
 
-.ting-object-tree-link a {
+.series_poc-link a {
     font-size: 18px;
     color: #006a97;
     text-transform: capitalize;
         
 }
 
-.ting-object-tree-links h2 {
+.series_poc-links h2 {
     display: block;
 }
 
@@ -75,18 +75,18 @@ and open the template in the editor.
     Author     : DQ26525
 */
 
-.ting-object-tree-page .ting-object-tree-item, .ting-object-tree .ting-object-tree-item {
+.series_poc-page .series_poc-item, .series_poc .series_poc-item {
     display: inline-block;
     width: 194px;
     margin: auto;
     min-height: 375px;
 }
 
-.ting-object-tree .ting-object-tree-item .view-mode-teaser .inner {
+.series_poc .series_poc-item .view-mode-teaser .inner {
     background-image: url(./images/defbookcover.jpg);
 }
 
-.ting-object-tree-item h2 {
+.series_poc-item h2 {
     font-family: FaktPro-Light, sans-serif;
     font-size: 14px;
     line-height: 20px;
@@ -95,20 +95,20 @@ and open the template in the editor.
     padding-top: 7px;
 }
 
-.ting-object-tree-item .field-name-ting-author {
+.series_poc-item .field-name-ting-author {
     color: #000000;
     font-family: FaktPro-SemiBold, sans-serif;
     font-size: 14px;
 }
 
-.ting-object-tree {
+.series_poc {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     padding-left: 0px;
 }
 
-.ting-object-tree-links {
+.series_poc-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -117,31 +117,31 @@ and open the template in the editor.
     padding-bottom: 20px;
 }
 
-.ting-object-tree-link {
+.series_poc-link {
     display: inline-block;
     width: 194px;
     margin: auto;
 }
 
-.ting-object-tree-link a {
+.series_poc-link a {
     font-size: 18px;
     color: #006a97;
     text-transform: capitalize;
 }
 
-.ting-object-tree-main h2 {
+.series_poc-main h2 {
     border-bottom: 1px solid rgba(38, 38, 38, .2);
 }
 
-.ting-object-tree-item h2 {
+.series_poc-item h2 {
     border-bottom: 1px solid rgba(38, 38, 38, .2);
 }
 
-.ting-object-tree-breadcrumb {
+.series_poc-breadcrumb {
     margin-bottom: 20px;
 }
 
-.ting-object-tree-breadcrumb-icon::after {
+.series_poc-breadcrumb-icon::after {
     content: "\e903";
     font-family: icomoon;
     font-size: 8px;
@@ -152,23 +152,23 @@ and open the template in the editor.
     top: -2px;
 }
 
-.ting-object-tree-links h2 {
+.series_poc-links h2 {
     display: block;
 }
 
-.ting-object-tree-page .secondary-content {
+.series_poc-page .secondary-content {
     width: 18.6726%;
     float: left;
     display: block;
     margin-right: 2.4911%;
 }
 
-.ting-object-tree-page .ting-object-tree-main {
+.series_poc-page .series_poc-main {
     width: 78.8363%;
     float: right;
 }
 
-.ting-object-tree-page ul {
+.series_poc-page ul {
     padding-left: 0px;
 }
 
@@ -182,21 +182,21 @@ and open the template in the editor.
 
 /* Menu */
 
-.ting-object-tree-menu ul.menu li.expanded ul.menu {
+.series_poc-menu ul.menu li.expanded ul.menu {
     margin-top: 20px;
     padding-left: 20px;
 }
 
-.ting-object-tree-menu ul.menu li {
+.series_poc-menu ul.menu li {
     margin-bottom: 20px;
 }
 
-.ting-object-tree-menu .sub-menu-title {
+.series_poc-menu .sub-menu-title {
     padding-bottom: 25px;
     font-size: 32px;
 }
 
-.ting-object-tree-menu ul.menu li.collapsed::after {
+.series_poc-menu ul.menu li.collapsed::after {
     content: "\e903";
     font-family: icomoon;
     font-size: 14px;
@@ -207,7 +207,7 @@ and open the template in the editor.
     margin-right: 12px;
 }
 
-.ting-object-tree-menu ul.menu li a.active {
+.series_poc-menu ul.menu li a.active {
     position: relative;
     padding-left: 20px;
     border-bottom: 4px solid #B28282;
@@ -253,38 +253,38 @@ and open the template in the editor.
 
 /* Mobile categories */
 
-.ting-object-tree-mobile-categories {
+.series_poc-mobile-categories {
     display: none;
 }
 
 @media only screen and (max-width: 768px) {
-    .ting-object-tree-mobile-categories {
+    .series_poc-mobile-categories {
         display: block;
         margin-top: 0px;
     }
-    .pane-content .ting-object-tree-page .secondary-content {
+    .pane-content .series_poc-page .secondary-content {
         display: none;
     }
     .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .secondary-content {
         display: none;
     }
-    .pane-content .ting-object-tree-page .ting-object-tree-main {
+    .pane-content .series_poc-page .series_poc-main {
         width: 100%;
         float: none;
         margin-top: -20px;
     }
-    .ting-object-tree-mobile-categories .more-link a {
+    .series_poc-mobile-categories .more-link a {
         float: none;
         margin-bottom: 15px;
         display: block;
         width: 100%;
     }
-    .ting-object-tree-mobile-categories .more-link a::after {
+    .series_poc-mobile-categories .more-link a::after {
         display: block;
         content: "\e901";
         color: #ffffff;
     }
-    .pane-content .ting-object-tree-main .pane-title {
+    .pane-content .series_poc-main .pane-title {
         margin-top: 40px;
         font-size: 40px;
         color: #006a97;
@@ -303,29 +303,29 @@ and open the template in the editor.
 
 /* Prev and next buttons */
 
-.ting-object-tree-pager .more-link a::after {
+.series_poc-pager .more-link a::after {
     color: #ffffff;
 }
 
-.ting-object-tree-objects-previous {
+.series_poc-objects-previous {
     float: left;
     margin-right: 30px;
 }
 
-.ting-object-tree-pager .ting-object-tree-objects-previous a {
+.series_poc-pager .series_poc-objects-previous a {
     padding-left: 80px;
     padding-right: 15px;
 }
 
-.ting-object-tree-pager .more-link {
+.series_poc-pager .more-link {
     clear: none;
 }
 
-.ting-object-tree-pager .ting-object-tree-objects-previous a::after {
+.series_poc-pager .series_poc-objects-previous a::after {
     display: none;
 }
 
-.ting-object-tree-pager .ting-object-tree-objects-previous a::before {
+.series_poc-pager .series_poc-objects-previous a::before {
     content: "\e902";
     font-family: icomoon;
     font-style: normal;
@@ -339,23 +339,23 @@ and open the template in the editor.
 }
 
 @media only screen and (max-width: 768px) {
-    .ting-object-tree-pager .more-link a {
+    .series_poc-pager .more-link a {
         width: 130px;
         margin-right: 20px;
     }
-    .ting-object-tree-pager .more-link a::after {
+    .series_poc-pager .more-link a::after {
         display: block;
     }
-    .ting-object-tree-pager .ting-object-tree-objects-previous a::after {
+    .series_poc-pager .series_poc-objects-previous a::after {
         display: none;
     }
-    .ting-object-tree-pager .ting-object-tree-objects-previous a {
+    .series_poc-pager .series_poc-objects-previous a {
         padding-left: 60px;
     }
-    .ting-object-tree-pager .ting-object-tree-objects-previous a::before {
+    .series_poc-pager .series_poc-objects-previous a::before {
         left: 0px;
     }
-    .ting-object-tree-pager .more-link a::after {
+    .series_poc-pager .more-link a::after {
         left: 70px;
     }
 }
@@ -363,11 +363,11 @@ and open the template in the editor.
 /* Mobile */
 
 @media only screen and (max-width: 768px) {
-    .ting-object-tree-page .ting-object-tree-item {
+    .series_poc-page .series_poc-item {
         width: 154px;
         min-height: 300px;
     }
-    .ting-object-tree .ting-object-tree-item {
+    .series_poc .series_poc-item {
         width: 154px;
         min-height: 300px;
     }
@@ -377,7 +377,7 @@ and open the template in the editor.
     .pane-ting-smart-carousel-content {
         margin-bottom: 20px;
     }
-    .ting-object-tree-breadcrumb {
+    .series_poc-breadcrumb {
         border-bottom: 1px solid rgba(38, 38, 38, .2);
     }
 }
@@ -398,15 +398,15 @@ and open the template in the editor.
     margin-left: 10px;
 }
 
-.ting-object-tree-item .ting-object.view-mode-teaser>.inner .ting-cover {
+.series_poc-item .ting-object.view-mode-teaser>.inner .ting-cover {
     overflow: inherit;
 }
 
-.ting-object-tree-item  .ting-object.view-mode-teaser > .inner {
+.series_poc-item  .ting-object.view-mode-teaser > .inner {
     padding-top: 143%;
 }
 
-.ting-object-tree-search-controls {
+.series_poc-search-controls {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
@@ -414,7 +414,7 @@ and open the template in the editor.
     min-height: 75px;
 }
 
-.ting-object-tree-filter-links {
+.series_poc-filter-links {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
@@ -422,20 +422,20 @@ and open the template in the editor.
     padding-top: 36px;
 }
 
-.ting-object-tree-filter-links .badge {
+.series_poc-filter-links .badge {
     margin-left: 0px;
     padding-left: 5px;
 }
 
-.ting-object-tree-filter-select {
+.series_poc-filter-select {
     border-bottom: 4px solid #B28282;
 }
 
-.ting-object-tree-object-breadcrumb\>\<a.href\= {
+.series_poc-object-breadcrumb\>\<a.href\= {
     margin-bottom: 2px;
 }
 
-.ting-object-tree-button {
+.series_poc-button {
 	display: flex;
     justify-content: space-between;
     background-color: #f3f3f3;
@@ -447,7 +447,7 @@ and open the template in the editor.
     align-items: center;
 }
 
-.ting-object-tree-search-buttons {
+.series_poc-search-buttons {
     width: 48%;
     display: flex;
     align-items: flex-start;
@@ -455,7 +455,7 @@ and open the template in the editor.
     margin-left: 10px;
 }
 
-.ting-object-tree-button img {
+.series_poc-button img {
     display: inline;
     height: 30px;
     margin-left: 20px;

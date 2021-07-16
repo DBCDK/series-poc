@@ -1,15 +1,15 @@
 <?php ?>
-<div class="ting-object-tree-page">
+<div class="series_poc-page">
     <aside class="secondary-content">
-        <div class="ting-object-tree-menu">
+        <div class="series_poc-menu">
             <h2 class="sub-menu-title">
                 <a href="/søgning" class="active-trail">Serier</a>
             </h2>
             <?php print $menu; ?>
         </div>
     </aside>
-    <div class="ting-object-tree-main">
-        <div class="ting-object-tree-breadcrumb">
+    <div class="series_poc-main">
+        <div class="series_poc-breadcrumb">
             <?php print $breadcrumb; ?>
         </div>
         <!-- <h2 class="pane-title"><?php print $title; ?> </h2> -->
