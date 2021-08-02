@@ -136,8 +136,15 @@ function series_poc_handle_series($series)
 function series_poc_handle_series_item($series_item)
 {
   $item = new SeriesObject();
-  $item->title = "test";
 
+  $object = new CoverObject();
+  $object->id = $series_item->work_id;
+  $object->title = $series_item->work_metadata->title[0];
+  $object->creators = $series_item->work_metadata->creator;
+  $item->cover = series_poc_render_cover($object);
+
+  $item->title = $series_item->work_metadata->title[0];
+  
   return theme('series_poc_item', array('item' => $item));
 }
 
@@ -170,12 +177,13 @@ function series_poc_process_results($results)
 
 function series_poc_render_cover($object)
 {
+
   $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ting_search_carousel')));
   $options = array(
     'html' => TRUE,
     'attributes' => array('title' => $object->title),
   );
-
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
   return l($image, 'ting/collection/' . $object->id, $options);
 }
 
@@ -422,4 +430,23 @@ class SeriesObject
   public $language;
   public $abstract;
   public $actions;
+
+
+}
+
+class CoverObject
+{
+  public $title;
+  public $creators;
+  public $id;
+
+  public function getCreators()
+  {
+    return ($this->creators);
+  }
+
+  public function getTitle()
+  {
+    return $this->title;
+  }
 }
