@@ -37,20 +37,20 @@ function series_poc_menu()
 function series_poc_theme($existing, $type, $theme, $path)
 {
   return array(
-    // 'series_poc_covers' => array(
-    //   'variables' => array('results' => NULL),
-    //   'template' => 'covers-search-result',
-    //   'path' => $path . '/templates',
-    // ),
-    // 'series_poc_item' => array(
-    //   'variables' => array(
-    //     'title' => NULL,
-    //     'creators' => NULL,
-    //     'cover' => NULL,
-    //   ),
-    //   'template' => 'ting-simple-search-item',
-    //   'path' => $path . '/templates',
-    // ),
+    'series_poc_main' => array(
+      'variables' => array(
+        'items' => NULL
+      ),
+      'template' => 'series-main-content',
+      'path' => $path . '/templates',
+    ),
+    'series_poc_item' => array(
+      'variables' => array(
+        'item' => NULL,
+      ),
+      'template' => 'series-item',
+      'path' => $path . '/templates',
+    ),
 
     'series_poc_page' => array(
       'variables' => array(
@@ -82,25 +82,18 @@ function series_poc_search()
   $category = '';
   $parameters = drupal_get_query_parameters();
 
-  // if (isset($parameters['searchquery'])) {
-  //   $searchquery = 'q=' . $parameters['searchquery'];
-  //   $key = $parameters['searchquery'];
-  // }
-
-  // if (isset($parameters['category'])) {
-  //   $category = '&category=' . $parameters['category'];
-  //   $category_id = $parameters['category'];
-  // }
-
-  // if (isset($parameters['filters'])) {
-  //   $filter = '&category=' . $parameters['filters'];
-  // }
+  if (isset($parameters['series'])) {
+    $series = series_poc_get_works_in_series($parameters['series']);
+    $items = series_poc_handle_series($series);
+  } else if (isset($parameters['universe'])) {
+  } else {
+  }
 
 
   //$results = series_poc_request($parameters_with_filters);
   //$objects = series_poc_process_results($results);
 
-  $items = 'items'; //array();
+ 
   // //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple15.txt", print_r($parameters, TRUE), FILE_APPEND);
   // foreach ($objects as $object) {
   //   $cover = series_poc_render_cover($object);
@@ -114,7 +107,7 @@ function series_poc_search()
   // $work = series_poc_get_work('870970-basis:53051049');
   // file_put_contents("/var/www/drupalvm/drupal/web/debug/series3.txt", print_r($work  , TRUE), FILE_APPEND);
   // file_put_contents("/var/www/drupalvm/drupal/web/debug/series4.txt", print_r($work->work_metadata->type , TRUE), FILE_APPEND);
-  $series = series_poc_get_works_in_series("Harry Potter");
+
   file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
 
 
@@ -127,6 +120,26 @@ function series_poc_search()
   return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
 }
 
+function series_poc_handle_series($series)
+{
+  $items = [];
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
+  if (isset($series->objects)) {
+    foreach ($series->objects as $series_item) {
+      $items[] = series_poc_handle_series_item($series_item);
+    }
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r( $items, TRUE), FILE_APPEND);
+  return theme('series_poc_main', array('items' => $items));
+}
+
+function series_poc_handle_series_item($series_item)
+{
+  $item = new SeriesObject();
+  $item->title = "test";
+
+  return theme('series_poc_item', array('item' => $item));
+}
 
 
 
@@ -400,25 +413,13 @@ function series_poc_get_breadcrumb_url($category_id, $options)
 }
 
 
-class SimpleSearchObject
+class SeriesObject
 {
   public $title;
   public $creators;
-  public $id;
-  public $pids;
+  public $cover;
+  public $number;
   public $language;
-  public $pid_details;
-  public $count = 0;
-  public $hit = true;
-  public $number_in_searches = array();
-
-  public function getCreators()
-  {
-    return array($this->creators);
-  }
-
-  public function getTitle()
-  {
-    return $this->title;
-  }
+  public $abstract;
+  public $actions;
 }

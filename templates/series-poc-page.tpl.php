@@ -3,7 +3,7 @@
     <aside class="secondary-content">
         <div class="series_poc-menu">
             <h2 class="sub-menu-title">
-                <a href="/søgning" class="active-trail">Serier</a>
+                <a href="/serier" class="active-trail">Serier</a>
             </h2>
             <?php print $menu; ?>
         </div>
