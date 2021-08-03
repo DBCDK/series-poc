@@ -461,3 +461,34 @@ and open the template in the editor.
     margin-left: 20px;
 }
 
+/*Series */
+
+.ting-series-item {
+	display: flex;
+	margin-bottom: 40px;
+}
+.ting-series-object-cover {
+	width: 20%;
+    margin-right: 20px;
+}
+
+.ting-series-object-content {
+	width: 60%;
+}
+
+.ting-series-object-title h2 {
+	color: #005f8c;
+    margin-bottom: 0px;;
+}
+
+.ting-series-object-number h2 {
+	font-size: 20px;
+}
+
+.ting-series-object-creator {
+	color: #005f8c;
+	margin-bottom: 20px;
+}
+
+
+
