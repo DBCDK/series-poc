@@ -26,7 +26,7 @@
         <div class="ting-series-object-title">
           <h2><?php print $item->title ?></h2>
         </div>
-        <div class="ting-series-object-author">
+        <div class="ting-series-object-creator">
           <?php print $item->creators ?>
         </div>
         <div class="ting-series-object-abstract">

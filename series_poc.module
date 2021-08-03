@@ -93,7 +93,7 @@ function series_poc_search()
   //$results = series_poc_request($parameters_with_filters);
   //$objects = series_poc_process_results($results);
 
- 
+
   // //file_put_contents("/var/www/drupalvm/drupal/web/debug/simple15.txt", print_r($parameters, TRUE), FILE_APPEND);
   // foreach ($objects as $object) {
   //   $cover = series_poc_render_cover($object);
@@ -126,26 +126,41 @@ function series_poc_handle_series($series)
   file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
   if (isset($series->objects)) {
     foreach ($series->objects as $series_item) {
-      $items[] = series_poc_handle_series_item($series_item);
+      $items[] = series_poc_handle_series_item($series_item, $series->title);
     }
   }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r( $items, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main', array('items' => $items));
 }
 
-function series_poc_handle_series_item($series_item)
+function series_poc_handle_series_item($series_item, $series_title)
 {
   $item = new SeriesObject();
 
   $object = new CoverObject();
   $object->id = $series_item->work_id;
-  $object->title = $series_item->work_metadata->title[0];
+  $object->title = $series_item->work_metadata->title_full[0];
   $object->creators = $series_item->work_metadata->creator;
   $item->cover = series_poc_render_cover($object);
 
-  $item->title = $series_item->work_metadata->title[0];
-  
+  $item->title = $series_item->work_metadata->title_full[0];
+  $item->creators = $series_item->work_metadata->creator[0];
+  $item->abstract = $series_item->work_metadata->abstract[0];
+  $item->number = series_poc_get_number_in_series($series_item, $series_title);
+
   return theme('series_poc_item', array('item' => $item));
+}
+
+function series_poc_get_number_in_series($series_item, $series_title)
+{
+  if (isset($series_item->series_memberships)) {
+    foreach ($series_item->series_memberships as $member_ship) {
+      $vars = get_object_vars($member_ship);
+      if (isset($vars[$series_title])) {
+        return implode(', ', $vars[$series_title]);
+      }
+    }
+  }
 }
 
 
@@ -430,8 +445,6 @@ class SeriesObject
   public $language;
   public $abstract;
   public $actions;
-
-
 }
 
 class CoverObject
