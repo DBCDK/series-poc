@@ -129,13 +129,7 @@ and open the template in the editor.
     text-transform: capitalize;
 }
 
-.series_poc-main h2 {
 
-}
-
-.series_poc-item h2 {
-
-}
 
 .series_poc-breadcrumb {
     margin-bottom: 20px;
@@ -488,6 +482,46 @@ and open the template in the editor.
 .ting-series-object-creator {
 	color: #005f8c;
 	margin-bottom: 20px;
+}
+
+.ting-series-all-item {
+	display: flex;
+	margin-bottom: 40px;
+}
+.ting-series-all-object-cover {
+	width: 40%;
+    margin-right: 20px;
+    min-height: 200px;
+}
+
+.ting-series-all-object-cover .ting-cover img {
+    height: 174px;
+    width: 125px;
+}
+
+.ting-series-all-object-content {
+	width: 50%;
+}
+
+.ting-series-all-cover-1 {
+	position: absolute;
+	z-index: 3;
+	left: 240px;
+	margin-top: 10px;
+}
+
+.ting-series-all-cover-2 {
+	position: absolute;
+	z-index: 2;
+	left: 290px;
+	margin-top: 5px;
+}
+
+.ting-series-all-cover-3 {
+	position: absolute;
+	z-index: 1;
+	left: 340px;
+	margin-top: 0px;
 }
 
 

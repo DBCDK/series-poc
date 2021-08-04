@@ -44,11 +44,28 @@ function series_poc_theme($existing, $type, $theme, $path)
       'template' => 'series-main-content',
       'path' => $path . '/templates',
     ),
+
+    'series_poc_main_all' => array(
+      'variables' => array(
+        'items' => NULL
+      ),
+      'template' => 'series-main-content-all',
+      'path' => $path . '/templates',
+    ),
+
     'series_poc_item' => array(
       'variables' => array(
         'item' => NULL,
       ),
       'template' => 'series-item',
+      'path' => $path . '/templates',
+    ),
+
+    'series_poc_all_item' => array(
+      'variables' => array(
+        'item' => NULL,
+      ),
+      'template' => 'series-all-item',
       'path' => $path . '/templates',
     ),
 
@@ -87,6 +104,8 @@ function series_poc_search()
     $items = series_poc_handle_series($series);
   } else if (isset($parameters['universe'])) {
   } else {
+    $all_series = series_poc_get_all_series();
+    $items = series_poc_show_all_series($all_series);
   }
 
 
@@ -108,7 +127,6 @@ function series_poc_search()
   // file_put_contents("/var/www/drupalvm/drupal/web/debug/series3.txt", print_r($work  , TRUE), FILE_APPEND);
   // file_put_contents("/var/www/drupalvm/drupal/web/debug/series4.txt", print_r($work->work_metadata->type , TRUE), FILE_APPEND);
 
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
 
 
   //$menu_links = series_poc_get_menu_links($key, $facets);
@@ -118,6 +136,47 @@ function series_poc_search()
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
   return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
+}
+
+function series_poc_show_all_series($series)
+{
+  $items = [];
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
+  if (isset($series)) {
+    foreach ($series as $series_item) {
+      $items[] = series_poc_show_all_series_item($series_item);
+    }
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
+  return theme('series_poc_main_all', array('items' => $items));
+}
+
+
+function series_poc_show_all_series_item($series_item)
+{
+  $item = new SeriesObject();
+
+  $object = new CoverObject();
+  //$object->id = $series_item->work_id;
+  $object->title = $series_item->title;
+  $object->creators = [];
+  $i = 1;
+  foreach (array_slice($series_item->pids, 0, 3) as $pid) {
+    $object->id = $pid;
+    $item->cover .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover($object) . '</div>';
+    $i++;
+  }
+
+
+  $item->title = $series_item->title;
+  $item->abstract = $series_item->description;
+  if (isset($series_item->universe_title)) {
+    $item->unviverse = $series_item->universe_title;
+  } else {
+    $item->unviverse = '';
+  }
+
+  return theme('series_poc_all_item', array('item' => $item));
 }
 
 function series_poc_handle_series($series)
@@ -284,6 +343,22 @@ function buildCurlRequest($url)
 //   return $facets;
 // }
 
+function series_poc_get_all_series()
+{
+  $results = series_poc_request('series-all', '');
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series16.txt", print_r($results, TRUE), FILE_APPEND);
+  if (isset($results->statusCode)) {
+    return null;
+  } else {
+    foreach ($results->series as $series) {
+      $parameters[] = 'title=' . rawurlencode($series);
+    }
+    $series_data = series_poc_multi_request('series', $parameters);
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
+    return $series_data;
+  }
+}
+
 function series_poc_get_universe($title)
 {
   $parameters = 'title=' . rawurlencode($title);
@@ -445,6 +520,7 @@ class SeriesObject
   public $language;
   public $abstract;
   public $actions;
+  public $universe;
 }
 
 class CoverObject
