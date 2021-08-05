@@ -487,6 +487,8 @@ and open the template in the editor.
 .ting-series-all-item {
 	display: flex;
 	margin-bottom: 40px;
+    background-color: #e5e5e5;
+    padding: 10px;
 }
 .ting-series-all-object-cover {
 	width: 40%;

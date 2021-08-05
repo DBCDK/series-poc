@@ -144,12 +144,15 @@ function series_poc_show_all_series($series)
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
   if (isset($series)) {
     foreach ($series as $series_item) {
-      $items[] = series_poc_show_all_series_item($series_item);
+      if (!empty($series_item)) {
+        $items[] = series_poc_show_all_series_item($series_item);
+      }
     }
   }
   file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main_all', array('items' => $items));
 }
+
 
 
 function series_poc_show_all_series_item($series_item)
@@ -345,12 +348,26 @@ function buildCurlRequest($url)
 
 function series_poc_get_all_series()
 {
-  $results = series_poc_request('series-all', '');
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series16.txt", print_r($results, TRUE), FILE_APPEND);
+  $parameters = drupal_get_query_parameters();
+
+  if (isset($parameters['category'])) {
+    $category = $parameters['category'];
+    $all_series = [];
+    foreach (series_poc_get_category_data() as $key => $title) {
+      if ($title['category'] == $category) {
+        $all_series[] = $key;
+      }
+    }
+  } else {
+    $results = series_poc_request('series-all', '');
+    $all_series = $results->series;
+  }
+
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
     return null;
   } else {
-    foreach ($results->series as $series) {
+    foreach ($all_series as $series) {
       $parameters[] = 'title=' . rawurlencode($series);
     }
     $series_data = series_poc_multi_request('series', $parameters);
@@ -538,4 +555,186 @@ class CoverObject
   {
     return $this->title;
   }
+}
+
+function series_poc_get_category_data()
+{
+  $data = array(
+    'Aske i munden, sand i skoen' => array(
+      'category' => 'romaner'
+    ),
+
+    'Renée Ballard-serien' => array(
+      'category' => 'krimi'
+    ),
+
+    'Harry Bosch-serien' => array(
+      'category' => 'krimi'
+    ),
+
+    'Harry Potter' => array(
+      'category' => 'fantasy'
+    ),
+
+    'The Harry Potter series' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Fantastic beasts (film)' => array(
+      'category' => 'romaner'
+    ),
+
+    'Fantastic beasts (filmmanuskript)' => array(
+      'category' => 'romaner'
+    ),
+
+    'Harry Potter (film)' => array(
+      'category' => 'fantasy'
+    ),
+
+    'WOW - vild viden' => array(
+      'category' => 'fag'
+    ),
+
+    'De 5' => array(
+      'category' => 'børn'
+    ),
+
+    'De 5 (samling)' => array(
+      'category' => 'børn'
+    ),
+
+    'Tænkepauser' => array(
+      'category' => 'fag'
+    ),
+
+    'Totemdyrenes fald' => array(
+      'category' => 'romaner'
+    ),
+
+    'Totemdyrenes saga' => array(
+      'category' => 'romaner'
+    ),
+
+    'Kongens ranger' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Våbenbrødre' => array(
+      'category' => 'romaner'
+    ),
+
+    'Skyggens lærling' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Den sidste inkal' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Før inkalen' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Teknofædrene' => array(
+      'category' => 'romaner'
+    ),
+
+    'Megalex' => array(
+      'category' => 'romaner'
+    ),
+
+    'Metabaronernes kaste - Castaka' => array(
+      'category' => 'romaner'
+    ),
+
+    'Metabaronernes kaste' => array(
+      'category' => 'romaner'
+    ),
+
+    'John Difools hemmlighed' => array(
+      'category' => 'romaner'
+    ),
+
+    'Inkalen' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Skøre facts' => array(
+      'category' => 'fag'
+    ),
+
+    'Vide verden' => array(
+      'category' => 'børn'
+    ),
+
+    'Rose-serien' => array(
+      'category' => 'børn'
+    ),
+
+    'Cirklen åbnes' => array(
+      'category' => 'romaner'
+    ),
+
+    'Løvindens sang' => array(
+      'category' => 'romaner'
+    ),
+
+    'Magiens cirkel' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Asta' => array(
+      'category' => 'romaner'
+    ),
+
+    'Hårdes saga' => array(
+      'category' => 'børn'
+    ),
+
+    'Wimpy Kid-serien' => array(
+      'category' => 'børn'
+    ),
+
+    'Rowleys dagbog' => array(
+      'category' => 'romaner'
+    ),
+
+    'Den der lever stille' => array(
+      'category' => 'romaner'
+    ),
+
+    'Skyggernes kniv (tegneserie)' => array(
+      'category' => 'fantasy'
+    ),
+
+    'His dark materials (tegneserie)' => array(
+      'category' => 'fantasy'
+    ),
+
+    'His dark materials' => array(
+      'category' => 'fantasy'
+    ),
+
+    'His dark materials (Sæson 1)' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Det gyldne kompas (tegneserie)' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Forestillinger om Støv' => array(
+      'category' => 'fantasy'
+    ),
+
+    'The book of dust' => array(
+      'category' => 'fantasy'
+    ),
+
+    'Det gyldne kompas' => array(
+      'category' => 'fantasy'
+    ),
+  );
+  return $data;
 }
