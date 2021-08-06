@@ -53,6 +53,22 @@ function series_poc_theme($existing, $type, $theme, $path)
       'path' => $path . '/templates',
     ),
 
+    'series_poc_breadcrumbs' => array(
+      'variables' => array(
+        'items' => NULL
+      ),
+      'template' => 'series-breadcrumb',
+      'path' => $path . '/templates',
+    ),
+
+    'series_poc_menu' => array(
+      'variables' => array(
+        'items' => NULL
+      ),
+      'template' => 'series-menu',
+      'path' => $path . '/templates',
+    ),
+
     'series_poc_item' => array(
       'variables' => array(
         'item' => NULL,
@@ -106,6 +122,7 @@ function series_poc_search()
   } else {
     $all_series = series_poc_get_all_series();
     $items = series_poc_show_all_series($all_series);
+    $menu = series_poc_handle_menu_categories();
   }
 
 
@@ -130,12 +147,64 @@ function series_poc_search()
 
 
   //$menu_links = series_poc_get_menu_links($key, $facets);
-  $menu = 'menu'; //drupal_render($menu_links);
+  //drupal_render($menu_links);
 
   $bread_crumb = ''; //series_poc_get_breadcrumb($category_id, $key);
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
   return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
+}
+
+function series_poc_handle_menu_categories()
+{
+  $parameters = drupal_get_query_parameters();
+
+  if (isset($parameters['category'])) {
+    $category = $parameters['category'];
+    return series_poc_handle_menu($category);
+  } else {
+    return series_poc_handle_menu();
+  }
+}
+
+function series_poc_handle_menu($category = '', $subitems = '')
+{
+  $menu_items = [];
+  $items = [
+    'romaner' => 'serier?category=romaner',
+    'krimi' => 'serier?category=krimi',
+    'fantasy' => 'serier?category=fantasy',
+    'fag' => 'serier?category=fag',
+    'børn' => 'serier?category=børm',
+  ];
+
+  foreach ($items as $key => $item) {
+    if ($key == $category) {
+      $menu_items[] = series_poc_make_menu_item($item, $key, true, $subitems);
+    } else {
+      $menu_items[] = series_poc_make_menu_item($item, $key);
+    }
+  }
+
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu1.txt", print_r($menu_items, TRUE), FILE_APPEND);
+  return theme('series_poc_menu', array('items' => $menu_items));
+}
+
+function series_poc_make_menu_item($item, $key, $active = false, $subitems = '')
+{
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu3.txt", print_r($key, TRUE), FILE_APPEND);
+  $class = 'series-menu-item';
+  if ($active) {
+    $class .= ' series-menu-item-active';
+  }
+  $options = array(
+    'html' => TRUE,
+    'query' => array('category' => $key),
+  );
+  $link = l(ucfirst($key), 'serier', $options);
+
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($link, TRUE), FILE_APPEND);
+  return '<li class="' . $class . '">' . $link . $subitems . '</li>';
 }
 
 function series_poc_show_all_series($series)
@@ -164,14 +233,19 @@ function series_poc_show_all_series_item($series_item)
   $object->title = $series_item->title;
   $object->creators = [];
   $i = 1;
+
   foreach (array_slice($series_item->pids, 0, 3) as $pid) {
     $object->id = $pid;
-    $item->cover .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover($object) . '</div>';
+    $item->cover .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
     $i++;
   }
 
+  $options = array(
+    'html' => TRUE,
+    'query' => ['series' => $series_item->title],
+  );
 
-  $item->title = $series_item->title;
+  $item->title = l($series_item->title, 'serier', $options);
   $item->abstract = $series_item->description;
   if (isset($series_item->universe_title)) {
     $item->unviverse = $series_item->universe_title;
@@ -203,6 +277,7 @@ function series_poc_handle_series_item($series_item, $series_title)
   $object->id = $series_item->work_id;
   $object->title = $series_item->work_metadata->title_full[0];
   $object->creators = $series_item->work_metadata->creator;
+
   $item->cover = series_poc_render_cover($object);
 
   $item->title = $series_item->work_metadata->title_full[0];
@@ -250,18 +325,30 @@ function series_poc_process_results($results)
   return $objects;
 }
 
+function series_poc_render_cover_series($object, $title)
+{
+  $url = 'serier';
 
+  $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ting_search_carousel')));
+  $options = array(
+    'html' => TRUE,
+    'attributes' => array('title' => $object->title),
+    'query' => ['series' => $title],
+  );
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
+  return l($image, $url, $options);
+}
 
 function series_poc_render_cover($object)
 {
-
+  $url = 'ting/collection/' . $object->id;
   $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ting_search_carousel')));
   $options = array(
     'html' => TRUE,
     'attributes' => array('title' => $object->title),
   );
   file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
-  return l($image, 'ting/collection/' . $object->id, $options);
+  return l($image, $url, $options);
 }
 
 

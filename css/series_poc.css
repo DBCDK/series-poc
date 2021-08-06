@@ -486,14 +486,14 @@ and open the template in the editor.
 
 .ting-series-all-item {
 	display: flex;
-	margin-bottom: 40px;
+	margin-bottom: 15px;
     background-color: #e5e5e5;
-    padding: 10px;
+    padding: 15px;
 }
 .ting-series-all-object-cover {
-	width: 40%;
-    margin-right: 20px;
-    min-height: 200px;
+	width: 30%;
+    margin-right: 0px;
+    min-height: 190px;
 }
 
 .ting-series-all-object-cover .ting-cover img {
@@ -502,29 +502,38 @@ and open the template in the editor.
 }
 
 .ting-series-all-object-content {
-	width: 50%;
+	width: 60%;
 }
 
 .ting-series-all-cover-1 {
 	position: absolute;
 	z-index: 3;
-	left: 240px;
+	left: 255px;
 	margin-top: 10px;
 }
 
 .ting-series-all-cover-2 {
 	position: absolute;
 	z-index: 2;
-	left: 290px;
+	left: 305px;
 	margin-top: 5px;
 }
 
 .ting-series-all-cover-3 {
 	position: absolute;
 	z-index: 1;
-	left: 340px;
+	left: 355px;
 	margin-top: 0px;
 }
 
+.ting-series-all-object-cover .ting-cover{
+    background-image: url(./images/defbookcover.jpg);
+    width: 125px;
+    height: 174px;
+}
+
+li.series-menu-item {
+    list-style: none;
+}
 
 
