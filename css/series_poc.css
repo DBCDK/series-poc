@@ -1,9 +1,7 @@
-
 .search-results ul.series_poc {
     padding-left: 0px;
     margin-right: -12px;
 }
-
 
 .series_poc-item {
     display: inline-block;
@@ -13,7 +11,7 @@
 }
 
 .series_poc-item h2 {
-    font-family: FaktPro-Normal,sans-serif;
+    font-family: FaktPro-Normal, sans-serif;
     font-size: 14px;
     line-height: 20px;
     margin-bottom: 0px;
@@ -23,7 +21,7 @@
 
 .series_poc-item .field-name-ting-author {
     color: #000000;
-    font-family: FaktPro-SemiBold,sans-serif;
+    font-family: FaktPro-SemiBold, sans-serif;
 }
 
 .series_poc {
@@ -41,10 +39,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    background: linear-gradient(rgba(255,138,0,.2),#fff);
+    background: linear-gradient(rgba(255, 138, 0, .2), #fff);
     padding-top: 20px;
     padding-bottom: 20px;
-        
 }
 
 .series_poc-link {
@@ -57,7 +54,6 @@
     font-size: 18px;
     color: #006a97;
     text-transform: capitalize;
-        
 }
 
 .series_poc-links h2 {
@@ -128,8 +124,6 @@ and open the template in the editor.
     color: #006a97;
     text-transform: capitalize;
 }
-
-
 
 .series_poc-breadcrumb {
     margin-bottom: 20px;
@@ -396,23 +390,23 @@ and open the template in the editor.
     overflow: inherit;
 }
 
-.series_poc-item  .ting-object.view-mode-teaser > .inner {
+.series_poc-item .ting-object.view-mode-teaser>.inner {
     padding-top: 143%;
 }
 
 .series_poc-search-controls {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     margin-bottom: 5px;
     min-height: 75px;
 }
 
 .series_poc-filter-links {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	width: 28%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 28%;
     padding-top: 36px;
 }
 
@@ -430,7 +424,7 @@ and open the template in the editor.
 }
 
 .series_poc-button {
-	display: flex;
+    display: flex;
     justify-content: space-between;
     background-color: #f3f3f3;
     height: 44px;
@@ -458,40 +452,45 @@ and open the template in the editor.
 /*Series */
 
 .ting-series-item {
-	display: flex;
-	margin-bottom: 40px;
+    display: flex;
+    margin-bottom: 15px;
+    background-color: #e5e5e5;
+    padding: 15px;
 }
+
 .ting-series-object-cover {
-	width: 20%;
+    width: 20%;
     margin-right: 20px;
 }
 
 .ting-series-object-content {
-	width: 60%;
+    width: 60%;
 }
 
 .ting-series-object-title h2 {
-	color: #005f8c;
-    margin-bottom: 0px;;
+    color: #005f8c;
+    margin-bottom: 0px;
+    ;
 }
 
 .ting-series-object-number h2 {
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .ting-series-object-creator {
-	color: #005f8c;
-	margin-bottom: 20px;
+    color: #005f8c;
+    margin-bottom: 20px;
 }
 
 .ting-series-all-item {
-	display: flex;
-	margin-bottom: 15px;
+    display: flex;
+    margin-bottom: 15px;
     background-color: #e5e5e5;
     padding: 15px;
 }
+
 .ting-series-all-object-cover {
-	width: 30%;
+    width: 30%;
     margin-right: 0px;
     min-height: 190px;
 }
@@ -502,31 +501,31 @@ and open the template in the editor.
 }
 
 .ting-series-all-object-content {
-	width: 60%;
+    width: 60%;
 }
 
 .ting-series-all-cover-1 {
-	position: absolute;
-	z-index: 3;
-	left: 255px;
-	margin-top: 10px;
+    position: absolute;
+    z-index: 3;
+    left: 255px;
+    margin-top: 10px;
 }
 
 .ting-series-all-cover-2 {
-	position: absolute;
-	z-index: 2;
-	left: 305px;
-	margin-top: 5px;
+    position: absolute;
+    z-index: 2;
+    left: 305px;
+    margin-top: 5px;
 }
 
 .ting-series-all-cover-3 {
-	position: absolute;
-	z-index: 1;
-	left: 355px;
-	margin-top: 0px;
+    position: absolute;
+    z-index: 1;
+    left: 355px;
+    margin-top: 0px;
 }
 
-.ting-series-all-object-cover .ting-cover{
+.ting-series-all-object-cover .ting-cover {
     background-image: url(./images/defbookcover.jpg);
     width: 125px;
     height: 174px;
@@ -534,6 +533,46 @@ and open the template in the editor.
 
 li.series-menu-item {
     list-style: none;
+    margin-bottom: 7px;
 }
 
+.ting-series-menu li a.active {
+    color: #005f8c;
+    font-size: 16px;
+}
 
+.series-menu-sub-level {
+    margin-left: 5px;
+    margin-bottom: 0px;
+    margin-top: 7px;
+}
+
+.series-menu-item.series-menu-item-active {
+    margin-left: 15px;
+}
+
+.series-menu-item::before {
+    content: "\e903";
+    font-family: icomoon;
+    font-size: 12px;
+    left: 0;
+    display: block;
+    top: -4px;
+    float: left;
+    margin-right: 3px;
+    color: #005f8c;
+    position: relative;
+    margin-top: 2px;
+}
+
+.ting-series-menu .series-menu-item.series-menu-item-active::before {
+    display: none;
+}
+
+.series-menu-sub-level-active li a {
+    border-bottom: 4px solid rgb(246, 109, 112);
+}
+
+.series-menu-item-selected a {
+    border-bottom: 4px solid rgb(246, 109, 112);
+}

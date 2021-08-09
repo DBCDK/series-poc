@@ -118,6 +118,7 @@ function series_poc_search()
   if (isset($parameters['series'])) {
     $series = series_poc_get_works_in_series($parameters['series']);
     $items = series_poc_handle_series($series);
+    $menu = series_poc_handle_menu_series($series);
   } else if (isset($parameters['universe'])) {
   } else {
     $all_series = series_poc_get_all_series();
@@ -155,6 +156,28 @@ function series_poc_search()
   return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
 }
 
+function series_poc_handle_menu_series($series)
+{
+  $category = series_poc_get_category_series($series);
+  $series_menu_item = '<ul class="series-menu-sub-level series-menu-sub-level-active">' . series_poc_make_series_menu_item($series->title, 'series', true) . '</ul>';
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item , TRUE), FILE_APPEND);
+  if (isset($series->universe_title)) {
+    $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($series->universe_title, 'universe', true, $series_menu_item) . '</ul>';
+    return series_poc_handle_menu($category, $univers_menu_item);
+  } else {
+    return series_poc_handle_menu($category, $series_menu_item);
+  }
+}
+
+function series_poc_get_category_series($series)
+{
+  foreach (series_poc_get_category_data() as $key => $title) {
+    if ($key == $series->title) {
+      return $title['category'];
+    }
+  }
+}
+
 function series_poc_handle_menu_categories()
 {
   $parameters = drupal_get_query_parameters();
@@ -190,12 +213,31 @@ function series_poc_handle_menu($category = '', $subitems = '')
   return theme('series_poc_menu', array('items' => $menu_items));
 }
 
+function series_poc_make_series_menu_item($title, $type, $active = false, $subitems = '')
+{
+  $class = 'series-menu-item';
+  if ($active) {
+    $class .= ' series-menu-item-active';
+  }
+  $options = array(
+    'html' => TRUE,
+    'query' => array($type => $title),
+  );
+  $link = l($title, 'serier', $options);
+
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($link, TRUE), FILE_APPEND);
+  return '<li class="' . $class . '">' . $link . $subitems  . '</li>';
+}
+
 function series_poc_make_menu_item($item, $key, $active = false, $subitems = '')
 {
   file_put_contents("/var/www/drupalvm/drupal/web/debug/menu3.txt", print_r($key, TRUE), FILE_APPEND);
   $class = 'series-menu-item';
   if ($active) {
     $class .= ' series-menu-item-active';
+    if ($subitems == '') {
+      $class .= ' series-menu-item-selected';
+    }
   }
   $options = array(
     'html' => TRUE,
@@ -276,12 +318,17 @@ function series_poc_handle_series_item($series_item, $series_title)
   $object = new CoverObject();
   $object->id = $series_item->work_id;
   $object->title = $series_item->work_metadata->title_full[0];
-  $object->creators = $series_item->work_metadata->creator;
+  if (isset($series_item->work_metadata->creator)) {
+    $object->creators = $series_item->work_metadata->creator;
+    $item->creators = $series_item->work_metadata->creator[0];
+  } else {
+    $object->creators = array();
+    $item->creators = '';
+  }
 
   $item->cover = series_poc_render_cover($object);
 
   $item->title = $series_item->work_metadata->title_full[0];
-  $item->creators = $series_item->work_metadata->creator[0];
   $item->abstract = $series_item->work_metadata->abstract[0];
   $item->number = series_poc_get_number_in_series($series_item, $series_title);
 
@@ -668,11 +715,11 @@ function series_poc_get_category_data()
     ),
 
     'Fantastic beasts (film)' => array(
-      'category' => 'romaner'
+      'category' => 'fantasy'
     ),
 
     'Fantastic beasts (filmmanuskript)' => array(
-      'category' => 'romaner'
+      'category' => 'fantasy'
     ),
 
     'Harry Potter (film)' => array(
@@ -696,11 +743,11 @@ function series_poc_get_category_data()
     ),
 
     'Totemdyrenes fald' => array(
-      'category' => 'romaner'
+      'category' => 'fantasy'
     ),
 
     'Totemdyrenes saga' => array(
-      'category' => 'romaner'
+      'category' => 'fantasy'
     ),
 
     'Kongens ranger' => array(
@@ -708,7 +755,7 @@ function series_poc_get_category_data()
     ),
 
     'Våbenbrødre' => array(
-      'category' => 'romaner'
+      'category' => 'fantasy'
     ),
 
     'Skyggens lærling' => array(
@@ -752,7 +799,7 @@ function series_poc_get_category_data()
     ),
 
     'Vide verden' => array(
-      'category' => 'børn'
+      'category' => 'fag'
     ),
 
     'Rose-serien' => array(
@@ -760,11 +807,11 @@ function series_poc_get_category_data()
     ),
 
     'Cirklen åbnes' => array(
-      'category' => 'romaner'
+      'category' => 'børn'
     ),
 
     'Løvindens sang' => array(
-      'category' => 'romaner'
+      'category' => 'børn'
     ),
 
     'Magiens cirkel' => array(
@@ -772,7 +819,7 @@ function series_poc_get_category_data()
     ),
 
     'Asta' => array(
-      'category' => 'romaner'
+      'category' => 'børn'
     ),
 
     'Hårdes saga' => array(
@@ -784,7 +831,7 @@ function series_poc_get_category_data()
     ),
 
     'Rowleys dagbog' => array(
-      'category' => 'romaner'
+      'category' => 'børn'
     ),
 
     'Den der lever stille' => array(
