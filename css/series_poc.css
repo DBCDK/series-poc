@@ -129,16 +129,7 @@ and open the template in the editor.
     margin-bottom: 20px;
 }
 
-.series_poc-breadcrumb-icon::after {
-    content: "\e903";
-    font-family: icomoon;
-    font-size: 8px;
-    padding-right: 10px;
-    padding-left: 10px;
-    top: 4px;
-    position: relative;
-    top: -2px;
-}
+
 
 .series_poc-links h2 {
     display: block;
@@ -575,4 +566,16 @@ li.series-menu-item {
 
 .series-menu-item-selected a {
     border-bottom: 4px solid rgb(246, 109, 112);
+}
+
+.series_poc-breadcrumb-icon::after {
+    content: "\e903";
+    font-family: icomoon;
+    font-size: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+    top: 4px;
+    position: relative;
+    top: -2px;
+    color:#005f8c;
 }

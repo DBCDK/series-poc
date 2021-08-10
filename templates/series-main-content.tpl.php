@@ -1,5 +1,5 @@
-
 <?php
+
 /**
  * @file
  * Modified version of the default theme implementation for displaying a single
@@ -11,11 +11,22 @@
  * @see template_process()
  */
 ?>
+<div class="ting-series-main-content">
+  <div class="ting-series-series-title">
+    <h2><?php print $title ?></h2>
+  </div>
+  <div class="ting-series-series-abstract">
+    <?php print $abstract ?>
+  </div>
+  <div class="ting-series-series-universe">
+    <?php print $universe ?>
+  </div>
+</div>
 
 <?php if ($items) : ?>
-    <ul class="ting-series-items">
-      <?php foreach ($items as $item) : ?>
-            <?php print $item; ?>
-      <?php endforeach; ?>
-    </ul>
+  <ul class="ting-series-items">
+    <?php foreach ($items as $item) : ?>
+      <?php print $item; ?>
+    <?php endforeach; ?>
+  </ul>
 <?php endif; ?>
