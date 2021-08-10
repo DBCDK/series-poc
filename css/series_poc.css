@@ -561,11 +561,11 @@ li.series-menu-item {
 }
 
 .series-menu-sub-level-active li a {
-    border-bottom: 4px solid rgb(246, 109, 112);
+    border-bottom: 4px solid #005f8c;
 }
 
 .series-menu-item-selected a {
-    border-bottom: 4px solid rgb(246, 109, 112);
+    border-bottom: 4px solid #005f8c;
 }
 
 .series_poc-breadcrumb-icon::after {
@@ -578,4 +578,15 @@ li.series-menu-item {
     position: relative;
     top: -2px;
     color:#005f8c;
+}
+
+.ting-series-main-content {
+	display: flex;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #005f8c;
+	padding-bottom: 20px;
+}
+
+.ting-series-series-universe {
+	margin-top: 20px;
 }

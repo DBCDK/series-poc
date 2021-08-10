@@ -12,14 +12,22 @@
  */
 ?>
 <div class="ting-series-main-content">
-  <div class="ting-series-series-title">
-    <h2><?php print $title ?></h2>
+  <div class="ting-series-all-object-cover">
+    <?php print $covers ?>
   </div>
-  <div class="ting-series-series-abstract">
-    <?php print $abstract ?>
-  </div>
-  <div class="ting-series-series-universe">
-    <?php print $universe ?>
+
+  <div class="ting-series-all-object-content">
+    <div class="ting-series-series-title">
+      <h2><?php print $title ?></h2>
+    </div>
+    <div class="ting-series-series-abstract">
+      <?php print $abstract ?>
+    </div>
+    <div class="ting-series-series-universe">
+      <?php if ($items) : ?>
+        <?php print $universe ?>
+      <?php endif; ?>
+    </div>
   </div>
 </div>
 

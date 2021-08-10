@@ -43,6 +43,7 @@ function series_poc_theme($existing, $type, $theme, $path)
         'title' => NULL,
         'creators' => NULL,
         'abstract' => NULL,
+        'covers' => NULL,
       ),
       'template' => 'series-main-content',
       'path' => $path . '/templates',
@@ -148,7 +149,7 @@ function series_poc_get_breadcrumb($series = null)
         'html' => TRUE,
         'query' => array('category' => $parameters['category']),
       );
-      $links[] = l($parameters['category'], '/serier', $options );
+      $links[] = l($parameters['category'], '/serier', $options);
     }
   } else {
     $category = series_poc_get_category_series($series);
@@ -156,21 +157,19 @@ function series_poc_get_breadcrumb($series = null)
       'html' => TRUE,
       'query' => array('category' => $category),
     );
-    $links[] = l(ucFirst($category) , '/serier', $options );
+    $links[] = l(ucFirst($category), '/serier', $options);
     if (isset($series->universe_title)) {
       $options = array(
         'html' => TRUE,
         'query' => array('universe' => $series->universe_title),
       );
-      $links[] = l($series->universe_title, '/serier', $options );
+      $links[] = l($series->universe_title, '/serier', $options);
     }
     $options = array(
       'html' => TRUE,
       'query' => array('series' => $series->title),
     );
-    $links[] = l($series->title, '/serier', $options );
-
-
+    $links[] = l($series->title, '/serier', $options);
   }
   return implode('<span class="series_poc-breadcrumb-icon"></span>', $links);
 }
@@ -182,7 +181,7 @@ function series_poc_handle_menu_series($series)
 {
   $category = series_poc_get_category_series($series);
   $series_menu_item = '<ul class="series-menu-sub-level series-menu-sub-level-active">' . series_poc_make_series_menu_item($series->title, 'series', true) . '</ul>';
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item , TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item, TRUE), FILE_APPEND);
   if (isset($series->universe_title)) {
     $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($series->universe_title, 'universe', true, $series_menu_item) . '</ul>';
     return series_poc_handle_menu($category, $univers_menu_item);
@@ -324,16 +323,57 @@ function series_poc_handle_series($series)
 {
   $items = [];
   file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
+  //$series->objects = series_poc_remove_duplicatesS($series);
   if (isset($series->objects)) {
     foreach ($series->objects as $series_item) {
       $items[] = series_poc_handle_series_item($series_item, $series->title);
     }
   }
+
+  $object = new CoverObject();
+  $object->title = $series->title;
+  $object->creators = [];
+  $i = 1;
+
+  $covers = '';
+  foreach (array_slice($series->pids, 0, 3) as $pid) {
+    $object->id = $pid;
+    $covers .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series->title) . '</div>';
+    $i++;
+  }
+
   $title = $series->title;
   $abstract = $series->description;
-  $universe = $series->universe_title;
+  $universe = null;
+  if (isset($series->universe_title)) {
+    $series->universe_title;
+    $options = array(
+      'html' => TRUE,
+      'query' => array('universe' => $series->universe_title),
+    );
+    if (isset($series->number_in_universe)) {
+      $prefix = 'Del ' . $series->number_in_universe . ' af: ';
+    } else {
+      $prefix = 'Del af: ';
+    }
+    $universe = l($prefix . $series->universe_title . ' universet', '/serier', $options);
+  }
   file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
-  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe));
+  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 'covers' => $covers));
+}
+
+function series_poc_remove_duplicatesS($series)
+{
+  $objects = [];
+  $number = 0;
+  foreach ($series->objects as $series_item) {
+    $series_number = series_poc_get_number_in_series($series_item, $series->title);
+    if (!($series_number == $number)) {
+      $objects[] = $series_item;
+    }
+    $number = $series_number;
+  }
+  return $objects;
 }
 
 function series_poc_handle_series_item($series_item, $series_title)
@@ -352,8 +392,8 @@ function series_poc_handle_series_item($series_item, $series_title)
   }
 
   $item->cover = series_poc_render_cover($object);
-
-  $item->title = $series_item->work_metadata->title_full[0];
+  $url = 'ting/object/' . $object->id;
+  $item->title = l($series_item->work_metadata->title_full[0], $url);
   $item->abstract = $series_item->work_metadata->abstract[0];
   $item->number = series_poc_get_number_in_series($series_item, $series_title);
 
@@ -413,7 +453,7 @@ function series_poc_render_cover_series($object, $title)
 
 function series_poc_render_cover($object)
 {
-  $url = 'ting/collection/' . $object->id;
+  $url = 'ting/object/' . $object->id;
   $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ting_search_carousel')));
   $options = array(
     'html' => TRUE,
@@ -457,6 +497,7 @@ function series_poc_request($action, $parameters)
 
 function series_poc_multi_request($action, $parameters)
 {
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series24.txt", print_r($parameters, TRUE), FILE_APPEND);
   $requests = [];
   foreach ($parameters as $parameter) {
     $service_url = 'https://series-poc.demo.dbc.dk/';
@@ -466,8 +507,12 @@ function series_poc_multi_request($action, $parameters)
   try {
     $results = curl_multi($requests);
     $decoded_results = [];
-    foreach ($results as $result) {
-      $decoded_results[] = json_decode($result);
+    if (is_array($results)) {
+      foreach ($results as $result) {
+        $decoded_results[] = json_decode($result);
+      }
+    } else {
+      $decoded_results[] = json_decode($results);
     }
     file_put_contents("/var/www/drupalvm/drupal/web/debug/series9.txt", print_r($results, TRUE), FILE_APPEND);
     return $decoded_results;
