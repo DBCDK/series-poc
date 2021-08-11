@@ -127,11 +127,8 @@ function series_poc_search()
   } else if (isset($parameters['universe'])) {
   } else {
     $all_series = series_poc_get_all_series();
-    file_put_contents("/var/www/data/debug/series2.txt", print_r($all_series , TRUE), FILE_APPEND);
     $items = series_poc_show_all_series($all_series);
-    file_put_contents("/var/www/data/debug/series3.txt", print_r($items  , TRUE), FILE_APPEND);
     $menu = series_poc_handle_menu_categories();
-    file_put_contents("/var/www/data/debug/series4.txt", print_r($menu  , TRUE), FILE_APPEND);
     $bread_crumb = series_poc_get_breadcrumb();
   }
 
@@ -501,19 +498,18 @@ function series_poc_request($action, $parameters)
 function series_poc_multi_request($action, $parameters)
 {
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series24.txt", print_r($parameters, TRUE), FILE_APPEND);
-  file_put_contents("/var/www/data/debug/multi4.txt", print_r($parameters, TRUE), FILE_APPEND);
+
   $requests = [];
   foreach ($parameters as $parameter) {
     $service_url = 'https://series-poc.demo.dbc.dk/';
     $service_url .= $action . '?' . $parameter;
     $requests[] = buildCurlRequest($service_url);
-    file_put_contents("/var/www/data/debug/multi5.txt", print_r($requests, TRUE), FILE_APPEND);
   }
-  file_put_contents("/var/www/data/debug/multi1.txt", print_r($requests, TRUE), FILE_APPEND);
+
   try {
     $results = curl_multi($requests);
     $decoded_results = [];
-    file_put_contents("/var/www/data/debug/multi2.txt", print_r($results, TRUE), FILE_APPEND);
+
     if (is_array($results)) {
       foreach ($results as $result) {
         $decoded_results[] = json_decode($result);
@@ -581,14 +577,12 @@ function series_poc_get_all_series()
     $all_series = $temp;
   } 
 
-  file_put_contents("/var/www/data/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
     return null;
   } else {
     foreach ($all_series as $series) {
       $parameters[] = 'title=' . rawurlencode($series);
     }
-    file_put_contents("/var/www/data/debug/series1.txt", print_r($parameters, TRUE), FILE_APPEND);
     $series_data = series_poc_multi_request('series', $parameters);
     
     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
