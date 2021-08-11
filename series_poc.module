@@ -325,7 +325,7 @@ function series_poc_show_all_series_item($series_item)
 function series_poc_handle_series($series)
 {
   $items = [];
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
   //$series->objects = series_poc_remove_duplicatesS($series);
   if (isset($series->objects)) {
     foreach ($series->objects as $series_item) {
