@@ -561,19 +561,25 @@ function series_poc_get_all_series()
 {
   try {
   $param = drupal_get_query_parameters();
+  $results = series_poc_request('series-all', '');
+  $all_series = $results->series;
 
   if (isset($param['category'])) {
     $category = $param['category'];
-    $all_series = [];
+    $cat_series = []; 
     foreach (series_poc_get_category_data() as $key => $title) {
       if ($title['category'] == $category) {
-        $all_series[] = $key;
+        $cat_series[] = $key;
       }
     }
-  } else {
-    $results = series_poc_request('series-all', '');
-    $all_series = $results->series;
-  }
+    $temp = [];
+    foreach ($all_series as $a) {
+      if (in_array($a, $cat_series)) {
+        $temp[] = $a;
+      }
+    }
+    $all_series = $temp;
+  } 
 
   file_put_contents("/var/www/data/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
