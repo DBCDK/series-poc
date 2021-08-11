@@ -567,13 +567,14 @@ function series_poc_get_all_series()
     $all_series = $results->series;
   }
 
-  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/data/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
     return null;
   } else {
     foreach ($all_series as $series) {
       $parameters[] = 'title=' . rawurlencode($series);
     }
+    file_put_contents("/var/www/data/debug/series1.txt", print_r($parameters, TRUE), FILE_APPEND);
     $series_data = series_poc_multi_request('series', $parameters);
     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
     return $series_data;
