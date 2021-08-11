@@ -507,9 +507,11 @@ function series_poc_multi_request($action, $parameters)
     $service_url .= $action . '?' . $parameter;
     $requests[] = buildCurlRequest($service_url);
   }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/multi1.txt", print_r($requests, TRUE), FILE_APPEND);
   try {
     $results = curl_multi($requests);
     $decoded_results = [];
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/multi2.txt", print_r($results, TRUE), FILE_APPEND);
     if (is_array($results)) {
       foreach ($results as $result) {
         $decoded_results[] = json_decode($result);
@@ -520,7 +522,7 @@ function series_poc_multi_request($action, $parameters)
     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series9.txt", print_r($results, TRUE), FILE_APPEND);
     return $decoded_results;
   } catch (Exception $e) {
-    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
   }
 }
 
