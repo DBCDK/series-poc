@@ -501,17 +501,19 @@ function series_poc_request($action, $parameters)
 function series_poc_multi_request($action, $parameters)
 {
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series24.txt", print_r($parameters, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/data/debug/multi4.txt", print_r($parameters, TRUE), FILE_APPEND);
   $requests = [];
   foreach ($parameters as $parameter) {
     $service_url = 'https://series-poc.demo.dbc.dk/';
     $service_url .= $action . '?' . $parameter;
     $requests[] = buildCurlRequest($service_url);
+    file_put_contents("/var/www/data/debug/multi5.txt", print_r($requests, TRUE), FILE_APPEND);
   }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/multi1.txt", print_r($requests, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/data/debug/multi1.txt", print_r($requests, TRUE), FILE_APPEND);
   try {
     $results = curl_multi($requests);
     $decoded_results = [];
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/multi2.txt", print_r($results, TRUE), FILE_APPEND);
+    file_put_contents("/var/www/data/debug/multi2.txt", print_r($results, TRUE), FILE_APPEND);
     if (is_array($results)) {
       foreach ($results as $result) {
         $decoded_results[] = json_decode($result);
@@ -522,7 +524,7 @@ function series_poc_multi_request($action, $parameters)
     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series9.txt", print_r($results, TRUE), FILE_APPEND);
     return $decoded_results;
   } catch (Exception $e) {
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
+    file_put_contents("/var/www/data/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
   }
 }
 
