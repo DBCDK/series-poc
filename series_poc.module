@@ -552,6 +552,7 @@ function buildCurlRequest($url)
 
 function series_poc_get_all_series()
 {
+  try {
   $parameters = drupal_get_query_parameters();
 
   if (isset($parameters['category'])) {
@@ -576,9 +577,13 @@ function series_poc_get_all_series()
     }
     file_put_contents("/var/www/data/debug/series1.txt", print_r($parameters, TRUE), FILE_APPEND);
     $series_data = series_poc_multi_request('series', $parameters);
+    
     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
     return $series_data;
   }
+} catch (Exception $e) {
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
+}
 }
 
 function series_poc_get_universe($title)
