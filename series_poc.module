@@ -127,8 +127,11 @@ function series_poc_search()
   } else if (isset($parameters['universe'])) {
   } else {
     $all_series = series_poc_get_all_series();
+    file_put_contents("/var/www/data/debug/series2.txt", print_r($all_series , TRUE), FILE_APPEND);
     $items = series_poc_show_all_series($all_series);
+    file_put_contents("/var/www/data/debug/series3.txt", print_r($items  , TRUE), FILE_APPEND);
     $menu = series_poc_handle_menu_categories();
+    file_put_contents("/var/www/data/debug/series4.txt", print_r($menu  , TRUE), FILE_APPEND);
     $bread_crumb = series_poc_get_breadcrumb();
   }
 
