@@ -556,10 +556,10 @@ function buildCurlRequest($url)
 function series_poc_get_all_series()
 {
   try {
-  $parameters = drupal_get_query_parameters();
+  $param = drupal_get_query_parameters();
 
-  if (isset($parameters['category'])) {
-    $category = $parameters['category'];
+  if (isset($param['category'])) {
+    $category = $param['category'];
     $all_series = [];
     foreach (series_poc_get_category_data() as $key => $title) {
       if ($title['category'] == $category) {
