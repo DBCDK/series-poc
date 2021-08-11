@@ -181,7 +181,7 @@ function series_poc_handle_menu_series($series)
 {
   $category = series_poc_get_category_series($series);
   $series_menu_item = '<ul class="series-menu-sub-level series-menu-sub-level-active">' . series_poc_make_series_menu_item($series->title, 'series', true) . '</ul>';
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item, TRUE), FILE_APPEND);
   if (isset($series->universe_title)) {
     $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($series->universe_title, 'universe', true, $series_menu_item) . '</ul>';
     return series_poc_handle_menu($category, $univers_menu_item);
@@ -230,7 +230,7 @@ function series_poc_handle_menu($category = '', $subitems = '')
     }
   }
 
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu1.txt", print_r($menu_items, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu1.txt", print_r($menu_items, TRUE), FILE_APPEND);
   return theme('series_poc_menu', array('items' => $menu_items));
 }
 
@@ -246,13 +246,13 @@ function series_poc_make_series_menu_item($title, $type, $active = false, $subit
   );
   $link = l($title, 'serier', $options);
 
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($link, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($link, TRUE), FILE_APPEND);
   return '<li class="' . $class . '">' . $link . $subitems  . '</li>';
 }
 
 function series_poc_make_menu_item($item, $key, $active = false, $subitems = '')
 {
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu3.txt", print_r($key, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu3.txt", print_r($key, TRUE), FILE_APPEND);
   $class = 'series-menu-item';
   if ($active) {
     $class .= ' series-menu-item-active';
@@ -266,7 +266,7 @@ function series_poc_make_menu_item($item, $key, $active = false, $subitems = '')
   );
   $link = l(ucfirst($key), 'serier', $options);
 
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($link, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($link, TRUE), FILE_APPEND);
   return '<li class="' . $class . '">' . $link . $subitems . '</li>';
 }
 
@@ -281,7 +281,7 @@ function series_poc_show_all_series($series)
       }
     }
   }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main_all', array('items' => $items));
 }
 
@@ -358,7 +358,7 @@ function series_poc_handle_series($series)
     }
     $universe = l($prefix . $series->universe_title . ' universet', '/serier', $options);
   }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 'covers' => $covers));
 }
 
@@ -447,7 +447,7 @@ function series_poc_render_cover_series($object, $title)
     'attributes' => array('title' => $object->title),
     'query' => ['series' => $title],
   );
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
   return l($image, $url, $options);
 }
 
@@ -459,7 +459,7 @@ function series_poc_render_cover($object)
     'html' => TRUE,
     'attributes' => array('title' => $object->title),
   );
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
   return l($image, $url, $options);
 }
 
@@ -469,7 +469,7 @@ function series_poc_request($action, $parameters)
 {
   $service_url = 'https://series-poc.demo.dbc.dk/';
   $service_url .= $action . '?' . $parameters;
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series2.txt", print_r($service_url, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series2.txt", print_r($service_url, TRUE), FILE_APPEND);
   $curl = curl_init($service_url);
   curl_setopt(
     $curl,
@@ -497,7 +497,7 @@ function series_poc_request($action, $parameters)
 
 function series_poc_multi_request($action, $parameters)
 {
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series24.txt", print_r($parameters, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series24.txt", print_r($parameters, TRUE), FILE_APPEND);
   $requests = [];
   foreach ($parameters as $parameter) {
     $service_url = 'https://series-poc.demo.dbc.dk/';
@@ -514,10 +514,10 @@ function series_poc_multi_request($action, $parameters)
     } else {
       $decoded_results[] = json_decode($results);
     }
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/series9.txt", print_r($results, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series9.txt", print_r($results, TRUE), FILE_APPEND);
     return $decoded_results;
   } catch (Exception $e) {
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
   }
 }
 
@@ -567,7 +567,7 @@ function series_poc_get_all_series()
     $all_series = $results->series;
   }
 
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series21.txt", print_r($all_series, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
     return null;
   } else {
@@ -575,7 +575,7 @@ function series_poc_get_all_series()
       $parameters[] = 'title=' . rawurlencode($series);
     }
     $series_data = series_poc_multi_request('series', $parameters);
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
     return $series_data;
   }
 }
@@ -596,7 +596,7 @@ function series_poc_get_series($title)
 {
   $parameters = 'title=' . rawurlencode($title);
   $results = series_poc_request('series', $parameters);
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
     return null;
   } else {
@@ -617,11 +617,11 @@ function series_poc_get_works_in_series($title)
     $results = series_poc_multi_request('pid', $parameters);
     $stopTime = explode(' ', microtime());
     $time = floatval(($stopTime[1] + $stopTime[0]) - ($startTime[1] + $startTime[0]));
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/series8.txt", print_r($time, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series8.txt", print_r($time, TRUE), FILE_APPEND);
     if (isset($results)) {
       $series->objects = $results;
     }
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/series6.txt", print_r($results, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series6.txt", print_r($results, TRUE), FILE_APPEND);
   }
   return $series;
 }
@@ -630,7 +630,7 @@ function series_poc_get_work($pid)
 {
   $parameters = 'workid=' . $pid;
   $results = series_poc_request('pid', $parameters);
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series5.txt", print_r($results, TRUE), FILE_APPEND);
   if (isset($results->statusCode)) {
     return null;
   } else {
