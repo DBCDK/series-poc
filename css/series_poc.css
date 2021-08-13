@@ -590,3 +590,90 @@ li.series-menu-item {
 .ting-series-series-universe {
 	margin-top: 20px;
 }
+
+.ting-universe-item {
+    display: flex;
+    margin-bottom: 15px;
+    background-color: #e5e5e5;
+    padding: 15px;
+}
+
+.ting-universe-object-cover {
+    width: 20%;
+    margin-right: 20px;
+}
+
+.ting-universe-object-content {
+    width: 60%;
+}
+
+.ting-universe-object-title h2 {
+    color: #005f8c;
+    margin-bottom: 0px;
+    ;
+}
+
+.ting-universe-object-number h2 {
+    font-size: 20px;
+}
+
+.ting-universe-object-creator {
+    color: #005f8c;
+    margin-bottom: 20px;
+}
+
+.ting-universe-all-item {
+    display: flex;
+    margin-bottom: 15px;
+    background-color: #e5e5e5;
+    padding: 15px;
+}
+
+.ting-universe-all-object-cover {
+    width: 45%;
+    margin-right: 0px;
+    min-height: 190px;
+}
+
+.ting-universe-all-object-cover .ting-cover img {
+    height: 160px;
+    width: 115px;
+}
+
+.ting-universe-all-object-content {
+    width: 50%;
+}
+
+.ting-universe-all-cover-1 {
+    position: absolute;
+    z-index: 3;
+    left: 255px;
+    margin-top: 10px;
+}
+
+.ting-universe-all-cover-2 {
+    position: absolute;
+    z-index: 2;
+    left: 305px;
+    margin-top: 0px;
+}
+
+.ting-universe-all-cover-3 {
+    position: absolute;
+    z-index: 3;
+    left: 455px;
+    margin-top: 10px;
+}
+
+.ting-universe-all-cover-4 {
+    position: absolute;
+    z-index: 1;
+    left: 505px;
+    margin-top: 0px;
+}
+
+.ting-universe-all-object-cover .ting-cover {
+    background-image: url(./images/defbookcover.jpg);
+    width: 115px;
+    height: 160px;
+}

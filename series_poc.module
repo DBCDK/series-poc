@@ -89,6 +89,14 @@ function series_poc_theme($existing, $type, $theme, $path)
       'path' => $path . '/templates',
     ),
 
+    'series_poc_all_universe_item' => array(
+      'variables' => array(
+        'item' => NULL,
+      ),
+      'template' => 'universes-all-item',
+      'path' => $path . '/templates',
+    ),
+
     'series_poc_page' => array(
       'variables' => array(
         'items' => NULL,
@@ -126,10 +134,16 @@ function series_poc_search()
     $bread_crumb = series_poc_get_breadcrumb($series);
   } else if (isset($parameters['universe'])) {
   } else {
-    $all_series = series_poc_get_all_series();
-    $items = series_poc_show_all_series($all_series);
-    $menu = series_poc_handle_menu_categories();
-    $bread_crumb = series_poc_get_breadcrumb();
+    if (isset($parameters['show']) && $parameters['show'] == 'universe') {
+      $all_universes = series_poc_get_all_series('universe');
+      $items = series_poc_show_all_universes($all_universes);
+      file_put_contents("/var/www/drupalvm/drupal/web/debug/universe1.txt", print_r($all_universes, TRUE), FILE_APPEND);
+    } else {
+      $all_series = series_poc_get_all_series('series');
+      $items = series_poc_show_all_series($all_series);
+      $menu = series_poc_handle_menu_categories();
+      $bread_crumb = series_poc_get_breadcrumb();
+    }
   }
 
 
@@ -285,6 +299,66 @@ function series_poc_show_all_series($series)
   return theme('series_poc_main_all', array('items' => $items));
 }
 
+function series_poc_show_all_universes($universes)
+{
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/universe3.txt", print_r($universes, TRUE), FILE_APPEND);
+  $items = [];
+  if (isset($universes)) {
+    foreach ($universes as $series_item) {
+      if (!empty($series_item)) {
+        file_put_contents("/var/www/drupalvm/drupal/web/debug/universe6.txt", print_r($items, TRUE), FILE_APPEND);
+        $items[] = series_poc_show_all_universes_item($series_item);
+      }
+    }
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/universe4.txt", print_r($items, TRUE), FILE_APPEND);
+  return theme('series_poc_main_all', array('items' => $items));
+}
+
+function series_poc_show_all_universes_item($series_item)
+{
+  $item = new SeriesObject();
+
+  $object = new CoverObject();
+  //$object->id = $series_item->work_id;
+  $object->title = $series_item->title;
+  $object->creators = [];
+  $i = 1;
+
+  $first_covers = '';
+  $second_covers = '';
+  foreach (array_slice($series_item->included_works, 0, 2) as $pid) {
+    $object->id = $pid;
+    $first_covers  .= '<div class="ting-universe-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
+    $i++;
+  }
+
+  foreach (array_slice($series_item->included_works, -2, 2) as $pid) {
+    $object->id = $pid;
+    $second_covers  .= '<div class="ting-universe-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
+    $i++;
+  }
+
+  // $first_covers = '<div class="ting-universe-all-cover-container-first">' . $first_covers . '</div>';
+  // $second_covers = '<div class="ting-universe-all-cover-container-second">' . $second_covers  . '</div>';
+  $item->cover = $first_covers . $second_covers;
+
+  $options = array(
+    'html' => TRUE,
+    'query' => ['series' => $series_item->title],
+  );
+
+  $item->title = l($series_item->title, 'serier', $options);
+  $item->abstract = $series_item->description;
+  if (isset($series_item->universe_title)) {
+    $item->unviverse = $series_item->universe_title;
+  } else {
+    $item->unviverse = '';
+  }
+  $item->series = '';
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/universe5.txt", print_r($item, TRUE), FILE_APPEND);
+  return theme('series_poc_all_universe_item', array('item' => $item));
+}
 
 
 function series_poc_show_all_series_item($series_item)
@@ -305,7 +379,7 @@ function series_poc_show_all_series_item($series_item)
 
   $options = array(
     'html' => TRUE,
-    'query' => ['series' => $series_item->title],
+    'query' => ['universe' => $series_item->title],
   );
 
   $item->title = l($series_item->title, 'serier', $options);
@@ -553,44 +627,49 @@ function buildCurlRequest($url)
 //   return $facets;
 // }
 
-function series_poc_get_all_series()
+function series_poc_get_all_series($type)
 {
   try {
-  $param = drupal_get_query_parameters();
-  $results = series_poc_request('series-all', '');
-  $all_series = $results->series;
+    $param = drupal_get_query_parameters();
+    $results = series_poc_request($type . '-all', '');
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/universe2.txt", print_r($results, TRUE), FILE_APPEND);
+    if ($type == 'series') {
+      $all_series = $results->series;
+    } else {
+      $all_series = $results->universes;
+    }
 
-  if (isset($param['category'])) {
-    $category = $param['category'];
-    $cat_series = []; 
-    foreach (series_poc_get_category_data() as $key => $title) {
-      if ($title['category'] == $category) {
-        $cat_series[] = $key;
+    if (isset($param['category'])) {
+      $category = $param['category'];
+      $cat_series = [];
+      foreach (series_poc_get_category_data() as $key => $title) {
+        if ($title['category'] == $category) {
+          $cat_series[] = $key;
+        }
       }
-    }
-    $temp = [];
-    foreach ($all_series as $a) {
-      if (in_array($a, $cat_series)) {
-        $temp[] = $a;
+      $temp = [];
+      foreach ($all_series as $a) {
+        if (in_array($a, $cat_series)) {
+          $temp[] = $a;
+        }
       }
+      $all_series = $temp;
     }
-    $all_series = $temp;
-  } 
 
-  if (isset($results->statusCode)) {
-    return null;
-  } else {
-    foreach ($all_series as $series) {
-      $parameters[] = 'title=' . rawurlencode($series);
+    if (isset($results->statusCode)) {
+      return null;
+    } else {
+      foreach ($all_series as $series) {
+        $parameters[] = 'title=' . rawurlencode($series);
+      }
+      $series_data = series_poc_multi_request($type, $parameters);
+
+      //file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
+      return $series_data;
     }
-    $series_data = series_poc_multi_request('series', $parameters);
-    
-    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series17.txt", print_r($series_data, TRUE), FILE_APPEND);
-    return $series_data;
+  } catch (Exception $e) {
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
   }
-} catch (Exception $e) {
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
-}
 }
 
 function series_poc_get_universe($title)
@@ -860,6 +939,42 @@ function series_poc_get_category_data()
     'Det gyldne kompas' => array(
       'category' => 'fantasy'
     ),
+
+
+    'Cirklen universet' => array(
+      'category' => 'fantasy'
+    ),
+    'His dark materials' => array(
+      'category' => 'fantasy'
+    ),
+    'Inkal-sagaen' => array(
+      'category' => 'romaner'
+    ),
+    'Jodoverset' => array(
+      'category' => 'romaner'
+    ),
+    'Michael Connellys krimi-univers' => array(
+      'category' => 'krimi'
+    ),
+    'Skandia' => array(
+      'category' => 'fantasy'
+    ),
+    'Spirit animals' => array(
+      'category' => 'fantasy'
+    ),
+    'Tortall universet' => array(
+      'category' => 'fantasy'
+    ),
+    'Wimpy Kid' => array(
+      'category' => 'børn'
+    ),
+    'Wizarding World' => array(
+      'category' => 'fantasy'
+    ),
+
+
+
+
   );
   return $data;
 }
