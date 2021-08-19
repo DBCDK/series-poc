@@ -455,7 +455,7 @@ and open the template in the editor.
 }
 
 .ting-series-object-content {
-    width: 60%;
+    width: 77%;
 }
 
 .ting-series-object-title h2 {
@@ -466,6 +466,11 @@ and open the template in the editor.
 
 .ting-series-object-number h2 {
     font-size: 20px;
+}
+
+.ting-series-object-number {
+    display: flex;
+	justify-content: space-between;
 }
 
 .ting-series-object-creator {
@@ -492,7 +497,7 @@ and open the template in the editor.
 }
 
 .ting-series-all-object-content {
-    width: 60%;
+    width: 68%;
 }
 
 .ting-series-all-cover-1 {
@@ -591,6 +596,21 @@ li.series-menu-item {
 	margin-top: 20px;
 }
 
+.ting-series-all-object-title {
+	display: flex;
+	justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.ting-series-all-object-type {
+	background-color: #005f8c;
+	color: #fff;
+	height: 40px;
+	width: 120px;
+	padding-top: 12px;
+	padding-left: 40px;
+}
+
 .ting-universe-item {
     display: flex;
     margin-bottom: 15px;
@@ -630,50 +650,65 @@ li.series-menu-item {
 }
 
 .ting-universe-all-object-cover {
-    width: 45%;
+    width: 35%;
     margin-right: 0px;
     min-height: 190px;
 }
 
 .ting-universe-all-object-cover .ting-cover img {
-    height: 160px;
-    width: 115px;
+    height: 174px;
+    width: 125px;
 }
 
 .ting-universe-all-object-content {
-    width: 50%;
+    width: 64%;
 }
 
 .ting-universe-all-cover-1 {
     position: absolute;
     z-index: 3;
     left: 255px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .ting-universe-all-cover-2 {
     position: absolute;
     z-index: 2;
     left: 305px;
-    margin-top: 0px;
+    margin-top: 10px;
 }
 
 .ting-universe-all-cover-3 {
     position: absolute;
-    z-index: 3;
-    left: 455px;
-    margin-top: 10px;
+    z-index: 1;
+    left: 355px;
+    margin-top: 5px;
 }
 
 .ting-universe-all-cover-4 {
     position: absolute;
-    z-index: 1;
-    left: 505px;
+    z-index: 0;
+    left: 405px;
     margin-top: 0px;
 }
 
 .ting-universe-all-object-cover .ting-cover {
     background-image: url(./images/defbookcover.jpg);
-    width: 115px;
-    height: 160px;
+    width: 125px;
+    height: 174px;
+}
+
+.ting-universe-all-object-title {
+	display: flex;
+	justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.ting-universe-all-object-type {
+	background-color: #005f8c;
+	color: #fff;
+	height: 40px;
+	width: 120px;
+	padding-top: 12px;
+	padding-left: 30px;
 }

@@ -22,6 +22,9 @@
       <div class="ting-series-object-content">
         <div class="ting-series-object-number">
           <h2><?php print $item->number ?></h2>
+          <div class="ting-series-all-object-type">
+           <?php print $item->type ?>
+        </div>
         </div>
         <div class="ting-series-object-title">
           <h2><?php print $item->title ?></h2>

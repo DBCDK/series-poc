@@ -23,6 +23,9 @@
 
         <div class="ting-universe-all-object-title">
           <h2><?php print $item->title ?></h2>
+          <div class="ting-universe-all-object-type">
+           <?php print $item->type ?>
+        </div>
         </div>
 
         <div class="ting-universe-all-object-abstract">
