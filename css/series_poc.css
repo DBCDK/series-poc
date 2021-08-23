@@ -712,3 +712,44 @@ li.series-menu-item {
 	padding-top: 12px;
 	padding-left: 30px;
 }
+
+
+.ting-series-all-object-cover-universe .ting-series-all-cover-1 {
+    position: absolute;
+    z-index: 3;
+    left: 255px;
+    margin-top: 15px;
+}
+
+.ting-series-all-object-cover-universe .ting-series-all-cover-2 {
+    position: absolute;
+    z-index: 2;
+    left: 295px;
+    margin-top: 10px;
+}
+
+.ting-series-all-object-cover-universe .ting-series-all-cover-3 {
+    position: absolute;
+    z-index: 1;
+    left: 335px;
+    margin-top: 5px;
+}
+
+.ting-series-all-object-cover-universe .ting-series-all-cover-4 {
+    position: absolute;
+    z-index: 0;
+    left: 375px;
+    margin-top: 0px;
+}
+
+.ting-series-all-object-cover-universe {
+	width: 33%;
+	margin-right: 0px;
+	min-height: 190px;
+}
+
+.ting-series-all-object-cover-universe .ting-cover {
+    background-image: url(./images/defbookcover.jpg);
+    width: 125px;
+    height: 174px;
+}

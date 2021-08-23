@@ -49,6 +49,15 @@ function series_poc_theme($existing, $type, $theme, $path)
       'path' => $path . '/templates',
     ),
 
+
+    'universe_poc_main' => array(
+      'variables' => array(
+        'universe' => NULL
+      ),
+      'template' => 'universe-main-content',
+      'path' => $path . '/templates',
+    ),
+
     'series_poc_main_all' => array(
       'variables' => array(
         'items' => NULL
@@ -133,10 +142,17 @@ function series_poc_search()
     $menu = series_poc_handle_menu_series($series);
     $bread_crumb = series_poc_get_breadcrumb($series);
   } else if (isset($parameters['universe'])) {
+    $universe = series_poc_get_universe_with_series($parameters['universe']);
+    $items = series_poc_handle_universe($universe);
+    $menu = series_poc_handle_menu_universe($universe);
+    $universe->universe_title = $universe->title;
+    $bread_crumb = series_poc_get_breadcrumb($universe, true);
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/uni1.txt", print_r($universe, TRUE), FILE_APPEND);
   } else {
     if (isset($parameters['show']) && $parameters['show'] == 'universe') {
       $all_universes = series_poc_get_all_series('universe');
       $items = series_poc_show_all_universes($all_universes);
+
       file_put_contents("/var/www/drupalvm/drupal/web/debug/universe1.txt", print_r($all_universes, TRUE), FILE_APPEND);
     } else {
       $all_series = series_poc_get_all_series('series');
@@ -151,7 +167,7 @@ function series_poc_search()
   return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
 }
 
-function series_poc_get_breadcrumb($series = null)
+function series_poc_get_breadcrumb($series = null, $is_universe = false)
 {
   $links = array();
   $links[] = l('Serier', '/serier');
@@ -179,16 +195,31 @@ function series_poc_get_breadcrumb($series = null)
       );
       $links[] = l($series->universe_title, '/serier', $options);
     }
-    $options = array(
-      'html' => TRUE,
-      'query' => array('series' => $series->title),
-    );
-    $links[] = l($series->title, '/serier', $options);
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/menu1.txt", print_r($series, TRUE), FILE_APPEND);
+    if (!$is_universe) {
+      $options = array(
+        'html' => TRUE,
+        'query' => array('series' => $series->title),
+      );
+      $links[] = l($series->title, '/serier', $options);
+    }
   }
   return implode('<span class="series_poc-breadcrumb-icon"></span>', $links);
 }
 
+function series_poc_handle_menu_universe($universe)
+{
+  $category = series_poc_get_category_series($universe);
+  $series_item = '';
+  foreach ($universe->series as $series) {
+    $series_item .= series_poc_make_series_menu_item($series->title, 'series', false);
+  }
+  $series_menu_item = '<ul class="series-menu-sub-level">' . $series_item . '</ul>';
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item, TRUE), FILE_APPEND);
 
+  $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($universe->title, 'universe', true, $series_menu_item) . '</ul>';
+  return series_poc_handle_menu($category, $univers_menu_item);
+}
 
 
 function series_poc_handle_menu_series($series)
@@ -329,13 +360,13 @@ function series_poc_show_all_universes_item($series_item)
   $second_covers = '';
   foreach (array_slice($series_item->included_works, 0, 2) as $pid) {
     $object->id = $pid;
-    $first_covers  .= '<div class="ting-universe-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
+    $first_covers  .= '<div class="ting-universe-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title, 'universe') . '</div>';
     $i++;
   }
 
   foreach (array_slice($series_item->included_works, -2, 2) as $pid) {
     $object->id = $pid;
-    $second_covers  .= '<div class="ting-universe-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
+    $second_covers  .= '<div class="ting-universe-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title, 'universe') . '</div>';
     $i++;
   }
 
@@ -365,7 +396,7 @@ function series_poc_show_all_universes_item($series_item)
 function series_poc_show_all_series_item($series_item)
 {
   $item = new SeriesObject();
-
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/universe11.txt", print_r($series_item, TRUE), FILE_APPEND);
   $object = new CoverObject();
   //$object->id = $series_item->work_id;
   $object->title = $series_item->title;
@@ -392,6 +423,38 @@ function series_poc_show_all_series_item($series_item)
   }
   $item->type = 'Serie';
   return theme('series_poc_all_item', array('item' => $item));
+}
+
+function series_poc_handle_universe($universe)
+{
+  $universe_item = new stdClass();
+  $items = [];
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
+
+  if (isset($universe->series)) {
+    foreach ($universe->series as $series_item) {
+      $items[] = series_poc_show_all_series_item($series_item);
+    }
+  }
+
+  $universe_item->items = $items;
+
+  $object = new CoverObject();
+  $object->title = $universe->title;
+  $object->creators = [];
+  $i = 1;
+
+  $covers = '';
+  foreach (array_slice($universe->included_works, 0, 4) as $pid) {
+    $object->id = $pid;
+    $covers .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $universe->title) . '</div>';
+    $i++;
+  }
+  $universe_item->covers = $covers;
+  $universe_item->title = $universe->title;
+  $universe_item->abstract = $universe->description;
+
+  return theme('universe_poc_main', array('universe' => $universe_item));
 }
 
 function series_poc_handle_series($series)
@@ -513,7 +576,7 @@ function series_poc_process_results($results)
   return $objects;
 }
 
-function series_poc_render_cover_series($object, $title)
+function series_poc_render_cover_series($object, $title, $type = 'series')
 {
   $url = 'serier';
 
@@ -521,7 +584,7 @@ function series_poc_render_cover_series($object, $title)
   $options = array(
     'html' => TRUE,
     'attributes' => array('title' => $object->title),
-    'query' => ['series' => $title],
+    'query' => [$type => $title],
   );
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series12.txt", print_r($image, TRUE), FILE_APPEND);
   return l($image, $url, $options);
@@ -672,6 +735,17 @@ function series_poc_get_all_series($type)
   } catch (Exception $e) {
     file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
   }
+}
+
+function series_poc_get_universe_with_series($title)
+{
+  $universe = series_poc_get_universe($title);
+  $universe->series = [];
+  foreach ($universe->included_series as $series) {
+    $universe->series[] = series_poc_get_works_in_series($series);
+  }
+
+  return $universe;
 }
 
 function series_poc_get_universe($title)
