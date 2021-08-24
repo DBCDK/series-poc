@@ -34,7 +34,7 @@
            <?php print $item->abstract ?>
         </div>
         <div class="ting-series-all-object-universe">
-          <h2><?php print $item->universe ?></h2>
+          <?php print $item->universe ?>
         </div>
 
       </div>

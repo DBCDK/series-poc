@@ -12,7 +12,9 @@
         <div class="series_poc-breadcrumb">
             <?php print $breadcrumb; ?>
         </div>
-        <!-- <h2 class="pane-title"><?php print $title; ?> </h2> -->
+        <div class="series_poc-select">
+            <?php print $select; ?>
+        </div>
         <?php print $items; ?>
 
     </div>

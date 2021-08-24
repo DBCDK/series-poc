@@ -753,3 +753,25 @@ li.series-menu-item {
     width: 125px;
     height: 174px;
 }
+
+.series_poc-select {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.series_poc-select a {
+    margin-left: 25px;
+}
+
+.series_poc-select-item-selected {
+	border-bottom: 4px solid #f66d70;
+}
+
+.ting-series-all-object-universe {
+	margin-top: 20px;
+}
+
+.series-menu-sub-level .series-menu-item::before {
+    display: none;
+}

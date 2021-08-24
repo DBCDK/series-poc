@@ -111,6 +111,7 @@ function series_poc_theme($existing, $type, $theme, $path)
         'items' => NULL,
         'breadcrumb' => NULL,
         'menu' => NULL,
+        'select' => NULL,
       ),
       'template' => 'series-poc-page',
       'path' => $path . '/templates',
@@ -135,6 +136,7 @@ function series_poc_search()
 {
   $category = '';
   $parameters = drupal_get_query_parameters();
+  $select = '';
 
   if (isset($parameters['series'])) {
     $series = series_poc_get_works_in_series($parameters['series']);
@@ -152,19 +154,44 @@ function series_poc_search()
     if (isset($parameters['show']) && $parameters['show'] == 'universe') {
       $all_universes = series_poc_get_all_series('universe');
       $items = series_poc_show_all_universes($all_universes);
-
+      $menu = series_poc_handle_menu_categories();
+      $bread_crumb = series_poc_get_breadcrumb();
+      $select = series_poc_get_select(true);
       file_put_contents("/var/www/drupalvm/drupal/web/debug/universe1.txt", print_r($all_universes, TRUE), FILE_APPEND);
     } else {
       $all_series = series_poc_get_all_series('series');
       $items = series_poc_show_all_series($all_series);
       $menu = series_poc_handle_menu_categories();
       $bread_crumb = series_poc_get_breadcrumb();
+      $select = series_poc_get_select(false);
     }
   }
 
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
-  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'title' => '',));
+  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'select' =>$select));
+}
+
+function series_poc_get_select($is_universe)
+{
+  $links = array();
+  $parameters = drupal_get_query_parameters();
+  $options = array(
+    'html' => TRUE, 
+  );
+  if (isset($parameters['category'])) {
+    $options['query'] = array('category' => $parameters['category']);
+  }
+  $universe_options = $options;
+  $universe_options['query']['show'] = 'universe';
+  if ($is_universe) {
+    $universe_options['attributes'] = array('class' => array('series_poc-select-item-selected'));
+  } else {
+    $options['attributes'] = array('class' => array('series_poc-select-item-selected'));
+  }
+  $links[] = l('Serier', '/serier', $options);
+  $links[] = l('Universer', '/serier', $universe_options);
+  return implode('', $links);
 }
 
 function series_poc_get_breadcrumb($series = null, $is_universe = false)
@@ -417,9 +444,9 @@ function series_poc_show_all_series_item($series_item)
   $item->title = l($series_item->title, 'serier', $options);
   $item->abstract = $series_item->description;
   if (isset($series_item->universe_title)) {
-    $item->unviverse = $series_item->universe_title;
+    $item->universe = series_poc_get_universe_title($series_item);
   } else {
-    $item->unviverse = '';
+    $item->universe = '';
   }
   $item->type = 'Serie';
   return theme('series_poc_all_item', array('item' => $item));
@@ -484,20 +511,24 @@ function series_poc_handle_series($series)
   $abstract = $series->description;
   $universe = null;
   if (isset($series->universe_title)) {
-    $series->universe_title;
-    $options = array(
-      'html' => TRUE,
-      'query' => array('universe' => $series->universe_title),
-    );
-    if (isset($series->number_in_universe)) {
-      $prefix = 'Del ' . $series->number_in_universe . ' af: ';
-    } else {
-      $prefix = 'Del af: ';
-    }
-    $universe = l($prefix . $series->universe_title . ' universet', '/serier', $options);
+    $universe = series_poc_get_universe_title($series);
   }
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series10.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 'covers' => $covers));
+}
+
+function series_poc_get_universe_title($series)
+{
+  $options = array(
+    'html' => TRUE,
+    'query' => array('universe' => $series->universe_title),
+  );
+  if (isset($series->number_in_universe)) {
+    $prefix = 'Del ' . $series->number_in_universe . ' af universet: ';
+  } else {
+    $prefix = 'Del af universet: ';
+  }
+  return l($prefix . $series->universe_title , '/serier', $options);
 }
 
 function series_poc_remove_duplicatesS($series)
@@ -909,11 +940,11 @@ function series_poc_get_category_data()
     ),
 
     'Den sidste inkal' => array(
-      'category' => 'fantasy'
+      'category' => 'romaner'
     ),
 
     'Før inkalen' => array(
-      'category' => 'fantasy'
+      'category' => 'romaner'
     ),
 
     'Teknofædrene' => array(
