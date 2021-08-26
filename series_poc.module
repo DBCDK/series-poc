@@ -177,7 +177,7 @@ function series_poc_search()
 
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
-  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'select' =>$select));
+  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'select' => $select));
 }
 
 function series_poc_get_select($is_universe)
@@ -185,7 +185,7 @@ function series_poc_get_select($is_universe)
   $links = array();
   $parameters = drupal_get_query_parameters();
   $options = array(
-    'html' => TRUE, 
+    'html' => TRUE,
   );
   if (isset($parameters['category'])) {
     $options['query'] = array('category' => $parameters['category']);
@@ -368,7 +368,7 @@ function series_poc_show_all_universes($universes)
       }
     }
   }
- // file_put_contents("/var/www/drupalvm/drupal/web/debug/universe4.txt", print_r($items, TRUE), FILE_APPEND);
+  // file_put_contents("/var/www/drupalvm/drupal/web/debug/universe4.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main_all', array('items' => $items));
 }
 
@@ -523,7 +523,7 @@ function series_poc_get_universe_title($series)
   } else {
     $prefix = 'Del af universet: ';
   }
-  return l($prefix . $series->universe_title , '/serier', $options);
+  return l($prefix . $series->universe_title, '/serier', $options);
 }
 
 function series_poc_remove_duplicatesS($series)
@@ -558,7 +558,11 @@ function series_poc_handle_series_item($series_item, $series_title)
   $item->cover = series_poc_render_cover($object);
   $url = 'ting/object/' . $object->id;
   $item->title = l($series_item->work_metadata->title_full[0], $url);
-  $item->abstract = $series_item->work_metadata->abstract[0];
+  if (isset($series_item->work_metadata->abstract[0])) {
+    $item->abstract = $series_item->work_metadata->abstract[0];
+  } else {
+    $item->abstract = '';
+  }
   $item->number = series_poc_get_number_in_series($series_item, $series_title);
   $item->type = $series_item->work_metadata->type[0];
 
