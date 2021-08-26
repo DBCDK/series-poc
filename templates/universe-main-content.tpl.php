@@ -33,3 +33,9 @@
     <?php endforeach; ?>
   </ul>
 <?php endif; ?>
+
+<div class="ting-series-single-works">
+  <?php if ($universe->single_works) : ?>
+    <?php print $universe->single_works ?>
+  <?php endif; ?>
+</div>
