@@ -249,7 +249,7 @@ function series_poc_handle_menu_universe($universe)
   foreach ($universe->series as $series) {
     $series_item .= series_poc_make_series_menu_item($series->title, 'series', false);
   }
-  $series_menu_item = '<ul class="series-menu-sub-level">' . $series_item . '</ul>';
+  $series_menu_item = '<ul class="series-menu-sub-level-2">' . $series_item . '</ul>';
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item, TRUE), FILE_APPEND);
 
   $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($universe->title, 'universe', true, $series_menu_item) . '</ul>';
@@ -260,11 +260,22 @@ function series_poc_handle_menu_universe($universe)
 function series_poc_handle_menu_series($series)
 {
   $category = series_poc_get_category_series($series);
-  $series_menu_item = '<ul class="series-menu-sub-level series-menu-sub-level-active">' . series_poc_make_series_menu_item($series->title, 'series', true) . '</ul>';
   if (isset($series->universe_title)) {
-    $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($series->universe_title, 'universe', true, $series_menu_item) . '</ul>';
+    $universe = series_poc_get_universe($series->universe_title);
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($universe, TRUE), FILE_APPEND);
+    $series_menu_item = '<ul class="series-menu-sub-level-2">' ;
+    foreach ($universe->included_series as $universe_series) {
+      if ($series->title == $universe_series) {
+        $series_menu_item .= series_poc_make_series_menu_item($universe_series, 'series', true);
+      } else {
+        $series_menu_item .= series_poc_make_series_menu_item($universe_series, 'series', false);
+      }
+    }
+    $series_menu_item .= '</ul>';
+    $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($series->universe_title, 'universe', false, $series_menu_item) . '</ul>';
     return series_poc_handle_menu($category, $univers_menu_item);
   } else {
+    $series_menu_item = '<ul class="series-menu-sub-level series-menu-sub-level-active">' . series_poc_make_series_menu_item($series->title, 'series', true) . '</ul>';
     return series_poc_handle_menu($category, $series_menu_item);
   }
 }
