@@ -547,7 +547,7 @@ li.series-menu-item {
 	border-bottom: 4px solid #005f8c;
 }
 
-.series-menu-sub-level .series-menu-item-active > a{
+ul.series-menu-sub-level > li.series-menu-item-active > a{
 	border-bottom: 4px solid #005f8c;
 }
 
