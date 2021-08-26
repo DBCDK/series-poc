@@ -62,7 +62,7 @@ function series_poc_theme($existing, $type, $theme, $path)
       'variables' => array(
         'items' => NULL
       ),
-      'template' => ' universe-single-works',
+      'template' => 'universe-single-works',
       'path' => $path . '/templates',
     ),
 
@@ -476,6 +476,14 @@ function series_poc_handle_universe($universe)
   $universe_item->title = $universe->title;
   $universe_item->abstract = $universe->description;
   $universe_item->single_works = '';
+  if (!empty($universe->single_works)) {
+    $items = [];
+    foreach ($universe->single_works as $work) {
+      //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni1.txt", print_r($work, TRUE), FILE_APPEND);
+      $items[] = series_poc_handle_series_item($work, '');
+    }
+    $universe_item->single_works = theme('universe_poc_single_works', array('items' => $items));
+  }
 
   return theme('universe_poc_main', array('universe' => $universe_item));
 }
