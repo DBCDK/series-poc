@@ -172,6 +172,7 @@ function series_poc_search()
       $menu = series_poc_handle_menu_categories();
       $bread_crumb = series_poc_get_breadcrumb();
       $select = series_poc_get_select(false);
+      file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($all_series, TRUE), FILE_APPEND);
     }
   }
 
@@ -537,10 +538,14 @@ function series_poc_get_universe_title($series)
     'html' => TRUE,
     'query' => array('universe' => $series->universe_title),
   );
+  $universe_string = ' universet: ';
+  if (strpos(strtolower( $series->universe_title), 'universe') !== false) {
+    $universe_string = '';
+}
   if (isset($series->number_in_universe)) {
-    $prefix = 'Del ' . $series->number_in_universe . ' af universet: ';
+    $prefix = 'Del ' . $series->number_in_universe . ' af '. $universe_string ;
   } else {
-    $prefix = 'Del af universet: ';
+    $prefix = 'Del af' . $universe_string ;
   }
   return l($prefix . $series->universe_title, '/serier', $options);
 }
@@ -600,30 +605,6 @@ function series_poc_get_number_in_series($series_item, $series_title)
   }
 }
 
-
-
-
-
-function series_poc_process_results($results)
-{
-  $objects = array();
-  foreach ($results->response->docs as $result_object) {
-    $object = new SimpleSearchObject();
-    $object->id = $result_object->pid;
-    $object->title = $result_object->title;
-    if (isset($result_object->creator)) {
-      $object->creators = $result_object->creator[0];
-    } else {
-      $object->creators = '';
-    }
-    $object->pids = $result_object->pid;
-    if (isset($object->language)) {
-      $object->language = $result_object->language;
-    }
-    $objects[$object->id] = $object;
-  }
-  return $objects;
-}
 
 function series_poc_render_cover_series($object, $title, $type = 'series')
 {
@@ -765,7 +746,6 @@ function series_poc_get_all_series($type)
       return $series_data;
     }
   } catch (Exception $e) {
-    //file_put_contents("/var/www/drupalvm/drupal/web/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
   }
 }
 

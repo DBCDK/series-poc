@@ -619,7 +619,8 @@ ul.series-menu-sub-level > li.series-menu-item-active > a{
 	height: 40px;
 	width: 120px;
 	padding-top: 12px;
-	padding-left: 40px;
+	display: flex;
+    justify-content: center;
 }
 
 .ting-universe-item {
