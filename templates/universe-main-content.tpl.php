@@ -34,6 +34,15 @@
   </ul>
 <?php endif; ?>
 
+<?php if (!empty($universe->other_language_items)) : ?>
+  <h2>Serier på andre sprog</h2>
+  <ul class="ting-series-items">
+    <?php foreach ($universe->other_language_items as $item1) : ?>
+      <?php print $item1; ?>
+    <?php endforeach; ?>
+  </ul>
+<?php endif; ?>
+
 <div class="ting-series-single-works">
   <?php if ($universe->single_works) : ?>
     <?php print $universe->single_works ?>
