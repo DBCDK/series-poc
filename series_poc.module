@@ -173,7 +173,7 @@ function series_poc_search()
       $menu = series_poc_handle_menu_categories();
       $bread_crumb = series_poc_get_breadcrumb();
       $select = series_poc_get_select(false);
-      file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($all_series, TRUE), FILE_APPEND);
+     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($all_series, TRUE), FILE_APPEND);
     }
   }
 
@@ -381,7 +381,7 @@ function series_poc_show_all_universes($universes)
       }
     }
   }
-  // file_put_contents("/var/www/drupalvm/drupal/web/debug/universe4.txt", print_r($items, TRUE), FILE_APPEND);
+  ////file_put_contents("/var/www/drupalvm/drupal/web/debug/universe4.txt", print_r($items, TRUE), FILE_APPEND);
   return theme('series_poc_main_all', array('items' => $items));
 }
 
@@ -470,7 +470,7 @@ function series_poc_handle_universe($universe)
   $items = [];
   $universe_item->other_language_items  = [];
   $universe->series = series_poc_sort_series($universe);
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/universe12.txt", print_r($universe, TRUE), FILE_APPEND);
+ //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe12.txt", print_r($universe, TRUE), FILE_APPEND);
 
   if (isset($universe->series)) {
     foreach ($universe->series as $series_item) {
@@ -548,7 +548,7 @@ function series_poc_is_another_language($series)
   if (in_array($type, ['Bog', 'Tegneserie']) && $language == 'eng') {
     return true;
   }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/uni4.txt", print_r($type . ' ' . $language, TRUE), FILE_APPEND);
+ //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni4.txt", print_r($type . ' ' . $language, TRUE), FILE_APPEND);
   return false;
 }
 
