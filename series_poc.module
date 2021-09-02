@@ -44,6 +44,7 @@ function series_poc_theme($existing, $type, $theme, $path)
         'creators' => NULL,
         'abstract' => NULL,
         'covers' => NULL,
+        'read_at_will' => NULL,
       ),
       'template' => 'series-main-content',
       'path' => $path . '/templates',
@@ -456,7 +457,7 @@ function series_poc_show_all_series_item($series_item)
     $item->universe = '';
   }
   $item->type = 'Serie';
-  if ($series_item->read_first) {
+  if (isset($series_item->read_first) && $series_item->read_first) {
     $item->read_first = "Læs denne serie først";
   }
 
@@ -556,8 +557,18 @@ function series_poc_handle_series($series)
   $items = [];
   //file_put_contents("/var/www/drupalvm/drupal/web/debug/series7.txt", print_r($series, TRUE), FILE_APPEND);
   //$series->objects = series_poc_remove_duplicatesS($series);
+  $read_at_will = true;
   if (isset($series->objects)) {
     foreach ($series->objects as $series_item) {
+      $number = series_poc_get_number_in_series($series_item, $series->title);
+      if (isset($number) && $number == 1) {
+        $series_item->read_first = true;
+      } else {
+        $series_item->read_first = false;
+      }
+      if (isset($number)) {
+        $read_at_will = false;
+      }
       $items[] = series_poc_handle_series_item($series_item, $series->title);
     }
   }
@@ -580,7 +591,11 @@ function series_poc_handle_series($series)
   if (isset($series->universe_title)) {
     $universe = series_poc_get_universe_title($series);
   }
-  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 'covers' => $covers));
+  $read_at_will_text = null;
+  if ($read_at_will) {
+    $read_at_will_text = 'Kan læses i vilkårlig rækkefølge';
+  }
+  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 'covers' => $covers, 'read_at_will' => $read_at_will_text));
 }
 
 function series_poc_get_universe_title($series)
@@ -640,6 +655,9 @@ function series_poc_handle_series_item($series_item, $series_title)
   }
   $item->number = series_poc_get_number_in_series($series_item, $series_title);
   $item->type = $series_item->work_metadata->type[0];
+  if ($series_item->read_first) {
+    $item->read_first = "Begynd med denne";
+  }
 
   return theme('series_poc_item', array('item' => $item));
 }
