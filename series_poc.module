@@ -655,7 +655,7 @@ function series_poc_handle_series_item($series_item, $series_title)
   }
   $item->number = series_poc_get_number_in_series($series_item, $series_title);
   $item->type = $series_item->work_metadata->type[0];
-  if ($series_item->read_first) {
+  if (isset($series_item->read_first) && $series_item->read_first) {
     $item->read_first = "Begynd med denne";
   }
 
