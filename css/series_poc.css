@@ -466,6 +466,12 @@ and open the template in the editor.
     align-self: flex-end;
 }
 
+.ting-series-series-read-at-will {
+	font-family: FaktPro-SemiBold;
+	margin-top: auto;
+	align-self: flex-end;
+}
+
 .ting-series-object-title h2 {
     color: #005f8c;
     margin-bottom: 0px;
