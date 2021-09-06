@@ -45,6 +45,7 @@ function series_poc_theme($existing, $type, $theme, $path)
         'abstract' => NULL,
         'covers' => NULL,
         'read_at_will' => NULL,
+        'alt_title' => NULL,
       ),
       'template' => 'series-main-content',
       'path' => $path . '/templates',
@@ -503,6 +504,11 @@ function series_poc_handle_universe($universe)
   $universe_item->covers = $covers;
   $universe_item->title = $universe->title;
   $universe_item->abstract = $universe->description;
+  $universe_item->alt_title = null;
+  if (isset($universe->alternative_title)) {
+    $universe_item->alt_title = 'Alternativ titel: ' . $universe->alternative_title;
+  }
+
   $universe_item->single_works = '';
   if (!empty($universe->single_works)) {
     $items = [];
@@ -595,7 +601,12 @@ function series_poc_handle_series($series)
   if ($read_at_will) {
     $read_at_will_text = 'Kan læses i vilkårlig rækkefølge';
   }
-  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 'covers' => $covers, 'read_at_will' => $read_at_will_text));
+  $alt_title = null;
+  if (isset($series->alternative_title)) {
+    $alt_title = 'Alternativ titel: ' . $series->alternative_title[0];
+  }
+  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 
+         'covers' => $covers, 'read_at_will' => $read_at_will_text, 'alt_title' => $alt_title));
 }
 
 function series_poc_get_universe_title($series)

@@ -23,11 +23,17 @@
     <div class="ting-series-series-abstract">
       <?php print $abstract ?>
     </div>
+    <div class="ting-series-series-alt-title">
+      <?php if ($alt_title) : ?>
+        <?php print $alt_title ?>
+      <?php endif; ?>
+    </div>
     <div class="ting-series-series-universe">
       <?php if ($universe) : ?>
         <?php print $universe ?>
       <?php endif; ?>
     </div>
+
     <div class="ting-series-series-read-at-will">
       <?php if (isset($read_at_will)) : ?>
         <?php print $read_at_will ?>

@@ -23,7 +23,13 @@
     <div class="ting-series-series-abstract">
       <?php print $universe->abstract ?>
     </div>
+    <div class="ting-series-series-alt-title">
+      <?php if ($universe->alt_title) : ?>
+        <?php print $universe->alt_title ?>
+      <?php endif; ?>
+    </div>
   </div>
+
 </div>
 
 <?php if ($universe->items) : ?>

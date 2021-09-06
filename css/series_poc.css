@@ -456,6 +456,14 @@ and open the template in the editor.
 
 .ting-series-object-content {
     width: 77%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ting-series-read-first {
+	margin-top: auto;
+    font-family: FaktPro-SemiBold;
+    align-self: flex-end;
 }
 
 .ting-series-object-title h2 {
@@ -498,6 +506,12 @@ and open the template in the editor.
 
 .ting-series-all-object-content {
     width: 68%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ting-series-series-alt-title {
+	margin-top: 20px;
 }
 
 .ting-series-all-cover-1 {
@@ -787,3 +801,4 @@ ul.series-menu-sub-level > li.series-menu-item-active > a{
 .series-menu-sub-level .series-menu-item::before {
     display: none;
 }
+
