@@ -174,10 +174,9 @@ function series_poc_search()
       $menu = series_poc_handle_menu_categories();
       $bread_crumb = series_poc_get_breadcrumb();
       $select = series_poc_get_select(false);
-     //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($all_series, TRUE), FILE_APPEND);
+      //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($all_series, TRUE), FILE_APPEND);
     }
   }
-
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
   return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'select' => $select));
@@ -471,7 +470,7 @@ function series_poc_handle_universe($universe)
   $items = [];
   $universe_item->other_language_items  = [];
   $universe->series = series_poc_sort_series($universe);
- //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe12.txt", print_r($universe, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe12.txt", print_r($universe, TRUE), FILE_APPEND);
 
   if (isset($universe->series)) {
     foreach ($universe->series as $series_item) {
@@ -554,7 +553,7 @@ function series_poc_is_another_language($series)
   if (in_array($type, ['Bog', 'Tegneserie']) && $language == 'eng') {
     return true;
   }
- //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni4.txt", print_r($type . ' ' . $language, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni4.txt", print_r($type . ' ' . $language, TRUE), FILE_APPEND);
   return false;
 }
 
@@ -605,8 +604,10 @@ function series_poc_handle_series($series)
   if (isset($series->alternative_title)) {
     $alt_title = 'Alternativ titel: ' . $series->alternative_title[0];
   }
-  return theme('series_poc_main', array('items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe, 
-         'covers' => $covers, 'read_at_will' => $read_at_will_text, 'alt_title' => $alt_title));
+  return theme('series_poc_main', array(
+    'items' => $items, 'title' => $title, 'abstract' => $abstract, 'universe' => $universe,
+    'covers' => $covers, 'read_at_will' => $read_at_will_text, 'alt_title' => $alt_title
+  ));
 }
 
 function series_poc_get_universe_title($series)
@@ -900,6 +901,54 @@ function series_poc_get_work($pid)
   if (isset($results->statusCode)) {
     return null;
   } else {
+    return $results;
+  }
+}
+
+function series_poc_check_work_is_in_example($pid)
+{
+  $markup = '';
+  $data = series_poc_get_work_data();
+  if (in_array($pid, $data->works)) {
+    $work = series_poc_get_work($pid);
+    if (isset($work->series_memberships)) {
+      foreach ($work->series_memberships as $member_ship) {
+        $vars = get_object_vars($member_ship);
+        $title = array_keys($vars)[0];
+        $number = $vars[$title][0];
+        $options = array(
+          'html' => TRUE,
+          'query' => array('series' => $title),
+        );
+        $markup .= $number . '. del af ' . l($title, '/serier', $options);
+      }
+    }
+    if (isset($work->universe_title)) {
+      $options = array(
+        'html' => TRUE,
+        'query' => array('universe' => $work->universe_title),
+      );
+      $universe_string = ' universet: ';
+      if (strpos(strtolower($work->universe_title), 'universe') !== false) {
+        $universe_string = '';
+      }
+
+      $markup .= '<div class="series-poc-search-universe">Del af ' . $universe_string  . l($work->universe_title, '/serier', $options) . '</div>';
+    }
+    return $markup;
+  } else {
+    return null;
+  }
+}
+
+function series_poc_get_work_data()
+{
+  $data = variable_get('series_poc_work_data', null);
+  if (isset($data)) {
+    return $data;
+  } else {
+    $results = series_poc_request('pid-all', '');
+    variable_set('series_poc_work_data', $results);
     return $results;
   }
 }
