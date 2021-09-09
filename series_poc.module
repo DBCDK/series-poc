@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Enables search and navigation using simple navigation api.
+ * Showing examples off series in UI
  */
 
 
@@ -10,18 +10,6 @@
 function series_poc_menu()
 {
   $items = array();
-
-  $items['serier/%'] = array(
-    'title' => 'Series',
-    'page callback' => 'series_poc_search',
-    'access arguments' => array('access content'),
-  );
-
-  $items['serier/%/%'] = array(
-    'title' => 'Series',
-    'page callback' => 'series_poc_search',
-    'access arguments' => array('access content'),
-  );
 
   $items['serier'] = array(
     'title' => 'Series',
@@ -31,7 +19,6 @@ function series_poc_menu()
 
   return $items;
 }
-
 
 
 function series_poc_theme($existing, $type, $theme, $path)
@@ -113,6 +100,14 @@ function series_poc_theme($existing, $type, $theme, $path)
         'item' => NULL,
       ),
       'template' => 'universes-all-item',
+      'path' => $path . '/templates',
+    ),
+
+    'series_poc_object' => array(
+      'variables' => array(
+        'item' => NULL,
+      ),
+      'template' => 'series-object',
       'path' => $path . '/templates',
     ),
 
@@ -920,7 +915,7 @@ function series_poc_check_work_is_in_example($pid)
           'html' => TRUE,
           'query' => array('series' => $title),
         );
-        $markup .= $number . '. del af ' . l($title, '/serier', $options);
+        $markup .= '<div class="series-poc-search-series">' . $number . '. del af ' . l($title, '/serier', $options) . '</div>';
       }
     }
     if (isset($work->universe_title)) {
@@ -953,6 +948,80 @@ function series_poc_get_work_data()
   }
 }
 
+function series_poc_show_series_on_object($object)
+{
+  if (!isset($object)) {
+    return '';
+  }
+  $result = '';
+  $work = series_poc_get_object_series($object);
+  foreach ($work->series as $series_item) {
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/object2.txt", print_r($work, TRUE), FILE_APPEND);
+
+    $item = new SeriesObject();
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/object1.txt", print_r($object, TRUE), FILE_APPEND);
+    $item->cover = series_poc_get_covers_on_object($series_item, $work);
+
+    $options = array(
+      'html' => TRUE,
+      'query' => ['series' => $series_item->title],
+    );
+
+    $item->title = l($series_item->title, 'serier', $options);
+    $item->abstract = $series_item->description;
+    if (isset($series_item->universe_title)) {
+      $item->universe = series_poc_get_universe_title($series_item);
+    } else {
+      $item->universe = '';
+    }
+    $item->type = 'Serie';
+    if (isset($series_item->read_first) && $series_item->read_first) {
+      $item->read_first = "Læs denne serie først";
+    }
+
+    $result .= theme('series_poc_object', array('item' => $item));
+  }
+  return $result;
+}
+
+function series_poc_get_covers_on_object($series_item, $work)
+{
+  $items = [];
+  $number = series_poc_get_number_in_series($work, $series_item->title);
+  if (isset($number)) {
+  $number_in_series = explode(',', $number);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/object4.txt", print_r($number_in_series[0], TRUE), FILE_APPEND);
+  } else {
+
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/object3.txt", print_r($number, TRUE), FILE_APPEND);
+  $object = new CoverObject();
+  $object->title = $series_item->title;
+  $object->creators = [];
+  $i = 1;
+
+  foreach (array_slice($series_item->pids, 0, 3) as $pid) {
+    $object->id = $pid;
+    $items .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
+    $i++;
+  }
+  return $items;
+}
+
+
+function series_poc_get_object_series($object)
+{
+  $work = series_poc_get_work($object->id);
+  $work->series = [];
+  if (isset($work->series_memberships)) {
+    foreach ($work->series_memberships as $member_ship) {
+      $vars = get_object_vars($member_ship);
+      $title = array_keys($vars)[0];
+      $work->series[] = series_poc_get_works_in_series($title);
+    }
+  }
+  return $work;
+}
 
 
 class SeriesObject
