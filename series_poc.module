@@ -111,6 +111,14 @@ function series_poc_theme($existing, $type, $theme, $path)
       'path' => $path . '/templates',
     ),
 
+    'series_poc_object_item' => array(
+      'variables' => array(
+        'item' => NULL,
+      ),
+      'template' => 'series-object-item',
+      'path' => $path . '/templates',
+    ),
+
     'series_poc_page' => array(
       'variables' => array(
         'items' => NULL,
@@ -954,14 +962,14 @@ function series_poc_show_series_on_object($object)
     return '';
   }
   $result = '';
-  $work = series_poc_get_object_series($object);
+  $work = series_poc_get_object_series_from_api($object);
   foreach ($work->series as $series_item) {
     file_put_contents("/var/www/drupalvm/drupal/web/debug/object2.txt", print_r($work, TRUE), FILE_APPEND);
 
     $item = new SeriesObject();
     file_put_contents("/var/www/drupalvm/drupal/web/debug/object1.txt", print_r($object, TRUE), FILE_APPEND);
-    $item->cover = series_poc_get_covers_on_object($series_item, $work);
-
+    $item->covers = series_poc_get_covers_on_object($series_item, $work);
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/object10.txt", print_r($item, TRUE), FILE_APPEND);
     $options = array(
       'html' => TRUE,
       'query' => ['series' => $series_item->title],
@@ -987,29 +995,72 @@ function series_poc_show_series_on_object($object)
 function series_poc_get_covers_on_object($series_item, $work)
 {
   $items = [];
-  $number = series_poc_get_number_in_series($work, $series_item->title);
-  if (isset($number)) {
-  $number_in_series = explode(',', $number);
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/object4.txt", print_r($number_in_series[0], TRUE), FILE_APPEND);
-  } else {
-
-  }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/object3.txt", print_r($number, TRUE), FILE_APPEND);
-  $object = new CoverObject();
-  $object->title = $series_item->title;
-  $object->creators = [];
-  $i = 1;
-
-  foreach (array_slice($series_item->pids, 0, 3) as $pid) {
-    $object->id = $pid;
-    $items .= '<div class="ting-series-all-cover-' . $i . '">' . series_poc_render_cover_series($object, $series_item->title) . '</div>';
-    $i++;
+  $cover_objects = series_poc_get_next_series_objects($series_item, $work);
+  
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/object7.txt", print_r($cover_objects , TRUE), FILE_APPEND);
+  foreach ($cover_objects as $cover_object) {
+    $items[] = series_poc_create_cover_object($cover_object, $series_item);
   }
   return $items;
 }
 
+function series_poc_create_cover_object($cover_object, $series_item)
+{
+  $cover_item = new stdClass();
+  $cover_item->cover = series_poc_render_cover_object($cover_object);
+  $cover_item->title = $cover_object->work_metadata->title_full[0];
+  $number = series_poc_get_number_in_series($cover_object, $series_item->title);
+  if (isset($number)) {
+    $cover_item->number = $number;
+  }
+  if (isset($cover_object->read_next)) {
+    $cover_item->read_next = "Læs denne som den næste";
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/object11.txt", print_r($cover_item , TRUE), FILE_APPEND);
+  return theme('series_poc_object_item', array('item' => $cover_item));
+}
 
-function series_poc_get_object_series($object)
+function series_poc_render_cover_object($cover_object)
+{
+  $object = new CoverObject();
+  $object->id = $cover_object->work_id;
+  $object->title = $cover_object->work_metadata->title_full[0];
+  $object->creators = [];
+  return series_poc_render_cover($object);
+}
+
+function series_poc_get_next_series_objects($series_item, $work)
+{
+  $number = series_poc_get_number_in_series($work, $series_item->title);
+  if (isset($number)) {
+    return series_poc_get_next_series_objects_in_order($series_item, $number);
+  } else {
+    return array_slice($series_item->objects, 0, 3);
+  }
+}
+
+function series_poc_get_next_series_objects_in_order($series_item, $number)
+{
+  $cover_objects = [];
+  $found = false;
+  foreach ($series_item->objects as $object) {
+    $object_number = series_poc_get_number_in_series($object, $series_item->title);
+    if ($object_number == $number) {
+      $found = true;
+    }
+    if ($object_number == $number + 1) {
+      $object->read_next = true;
+    }
+    if ($found) {
+      $cover_objects[] = $object;
+    }
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/object5.txt", print_r($cover_objects , TRUE), FILE_APPEND);
+  return array_slice($cover_objects, 0, 3);
+}
+
+
+function series_poc_get_object_series_from_api($object)
 {
   $work = series_poc_get_work($object->id);
   $work->series = [];
