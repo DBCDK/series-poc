@@ -147,37 +147,34 @@ function series_poc_ctools_plugin_directory($module, $plugin)
 
 function series_poc_search()
 {
-  $category = '';
   $parameters = drupal_get_query_parameters();
   $select = '';
+  $client = new SeriesServiceClient();
 
   if (isset($parameters['series'])) {
-    $series = series_poc_get_works_in_series($parameters['series']);
+    $series = $client->get_works_in_series($parameters['series']);
     $items = series_poc_handle_series($series);
     $menu = series_poc_handle_menu_series($series);
     $bread_crumb = series_poc_get_breadcrumb($series);
   } else if (isset($parameters['universe'])) {
-    $universe = series_poc_get_universe_with_series($parameters['universe']);
+    $universe = $client->get_universe_with_series($parameters['universe']);
     $items = series_poc_handle_universe($universe);
     $menu = series_poc_handle_menu_universe($universe);
     $universe->universe_title = $universe->title;
     $bread_crumb = series_poc_get_breadcrumb($universe, true);
-    //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni1.txt", print_r($universe, TRUE), FILE_APPEND);
   } else {
+
     if (isset($parameters['show']) && $parameters['show'] == 'universe') {
-      $all_universes = series_poc_get_all_series('universe');
+      $all_universes = $client->get_all_series('universe');
       $items = series_poc_show_all_universes($all_universes);
       $menu = series_poc_handle_menu_categories();
       $bread_crumb = series_poc_get_breadcrumb();
-      $select = series_poc_get_select(true);
-      //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe1.txt", print_r($all_universes, TRUE), FILE_APPEND);
     } else {
-      $all_series = series_poc_get_all_series('series');
+      $all_series = $client->get_all_series('series');
       $items = series_poc_show_all_series($all_series);
       $menu = series_poc_handle_menu_categories();
       $bread_crumb = series_poc_get_breadcrumb();
       $select = series_poc_get_select(false);
-      //file_put_contents("/var/www/drupalvm/drupal/web/debug/series1.txt", print_r($all_series, TRUE), FILE_APPEND);
     }
   }
 
@@ -255,7 +252,6 @@ function series_poc_handle_menu_universe($universe)
     $series_item .= series_poc_make_series_menu_item($series->title, 'series', false);
   }
   $series_menu_item = '<ul class="series-menu-sub-level-2">' . $series_item . '</ul>';
-  //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu10.txt", print_r($series_menu_item, TRUE), FILE_APPEND);
 
   $univers_menu_item = '<ul class="series-menu-sub-level">' . series_poc_make_series_menu_item($universe->title, 'universe', true, $series_menu_item) . '</ul>';
   return series_poc_handle_menu($category, $univers_menu_item);
@@ -266,8 +262,9 @@ function series_poc_handle_menu_series($series)
 {
   $category = series_poc_get_category_series($series);
   if (isset($series->universe_title)) {
-    $universe = series_poc_get_universe($series->universe_title);
-    //file_put_contents("/var/www/drupalvm/drupal/web/debug/menu2.txt", print_r($universe, TRUE), FILE_APPEND);
+    $client = new SeriesServiceClient();
+    $universe = $client->get_universe($series->universe_title);
+
     $series_menu_item = '<ul class="series-menu-sub-level-2">';
     foreach ($universe->included_series as $universe_series) {
       if ($series->title == $universe_series) {
@@ -715,363 +712,24 @@ function series_poc_render_cover($object)
 }
 
 
-
-function series_poc_request($action, $parameters)
+function series_poc_create_link($title, $query = [])
 {
-  $service_url = 'https://series-poc.demo.dbc.dk/';
-  $service_url .= $action . '?' . $parameters;
-  $curl = curl_init($service_url);
-  curl_setopt(
-    $curl,
-    CURLOPT_HTTPHEADER,
-    array(
-      'Content-Type: application/json',
-      'Accept: application/json'
-    )
+  $options = array(
+    'html' => TRUE,
+    'query' => $query,
   );
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-  $curl_response = curl_exec($curl);
-  if ($curl_response === false) {
-    $info = curl_getinfo($curl);
-    curl_close($curl);
-  }
-  curl_close($curl);
-  $decoded = json_decode($curl_response);
-  if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
-    //TODO Handle error
-  }
-  return  $decoded;
-}
-
-function series_poc_multi_request($action, $parameters)
-{
-  $requests = [];
-  foreach ($parameters as $parameter) {
-    $service_url = 'https://series-poc.demo.dbc.dk/';
-    $service_url .= $action . '?' . $parameter;
-    $requests[] = buildCurlRequest($service_url);
-  }
-
-  try {
-    $results = curl_multi($requests);
-    $decoded_results = [];
-
-    if (is_array($results)) {
-      foreach ($results as $result) {
-        $decoded_results[] = json_decode($result);
-      }
-    } else {
-      $decoded_results[] = json_decode($results);
-    }
-    return $decoded_results;
-  } catch (Exception $e) {
-    //file_put_contents("/var/www/data/debug/series-exception.txt", print_r($e, TRUE), FILE_APPEND);
-  }
-}
-
-function buildCurlRequest($url)
-{
-  $curl_session = array();
-  $curl_session['endpoint'] = $url;
-  // Array of cURL options. See the documentation for curl_setopt for 
-  // details on what options are available.
-
-  $curl_options = array(
-    CURLOPT_RETURNTRANSFER => TRUE,
-    CURLOPT_HTTPHEADER => array(
-      'Content-Type: application/json',
-      'Accept: application/json'
-    )
-  );
-
-  $curl_session['options'] = $curl_options;
-  return $curl_session;
-}
-
-
-
-function series_poc_get_all_series($type)
-{
-  try {
-    $param = drupal_get_query_parameters();
-    $results = series_poc_request($type . '-all', '');
-    //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe2.txt", print_r($results, TRUE), FILE_APPEND);
-    if ($type == 'series') {
-      $all_series = $results->series;
-    } else {
-      $all_series = $results->universes;
-    }
-
-    if (isset($param['category'])) {
-      $category = $param['category'];
-      $cat_series = [];
-      foreach (series_poc_get_category_data() as $key => $title) {
-        if ($title['category'] == $category) {
-          $cat_series[] = $key;
-        }
-      }
-      $temp = [];
-      foreach ($all_series as $a) {
-        if (in_array($a, $cat_series)) {
-          $temp[] = $a;
-        }
-      }
-      $all_series = $temp;
-    }
-
-    if (isset($results->statusCode)) {
-      return null;
-    } else {
-      foreach ($all_series as $series) {
-        $parameters[] = 'title=' . rawurlencode($series);
-      }
-      $series_data = series_poc_multi_request($type, $parameters);
-
-      return $series_data;
-    }
-  } catch (Exception $e) {
-  }
-}
-
-function series_poc_get_universe_with_series($title)
-{
-  $pids = [];
-  $universe = series_poc_get_universe($title);
-  $universe->series = [];
-  foreach ($universe->included_series as $series) {
-    $universe->series[] = series_poc_get_works_in_series($series);
-  }
-
-  foreach ($universe->series as $series) {
-    $pids  = array_merge($pids, $series->pids);
-  }
-  $single_pids = array_diff($universe->included_works, $pids);
-  if (isset($single_pids)) {
-    $universe->single_works = [];
-    foreach ($single_pids as $pid) {
-      $universe->single_works[] = series_poc_get_work($pid);
-    }
-  }
-  return $universe;
-}
-
-function series_poc_get_universe($title)
-{
-  $parameters = 'title=' . rawurlencode($title);
-  $results = series_poc_request('universe', $parameters);
-  if (isset($results->statusCode)) {
-    return null;
-  } else {
-    return $results;
-  }
-}
-
-function series_poc_get_series($title)
-{
-  $parameters = 'title=' . rawurlencode($title);
-  $results = series_poc_request('series', $parameters);
-  if (isset($results->statusCode)) {
-    return null;
-  } else {
-    return $results;
-  }
-}
-
-function series_poc_get_works_in_series($title)
-{
-  $parameters = [];
-  $objects = [];
-  $series = series_poc_get_series($title);
-  if (isset($series) && isset($series->pids)) {
-    $startTime = explode(' ', microtime());
-    foreach ($series->pids as $pid) {
-      $parameters[] = 'workid=' . $pid;
-    }
-    $results = series_poc_multi_request('pid', $parameters);
-    $stopTime = explode(' ', microtime());
-    $time = floatval(($stopTime[1] + $stopTime[0]) - ($startTime[1] + $startTime[0]));
-    if (isset($results)) {
-      $series->objects = $results;
-    }
-  }
-  return $series;
-}
-
-function series_poc_get_work($pid)
-{
-  $parameters = 'workid=' . $pid;
-  $results = series_poc_request('pid', $parameters);
-  if (isset($results->statusCode)) {
-    return null;
-  } else {
-    return $results;
-  }
-}
-
-function series_poc_check_work_is_in_example($pid)
-{
-  $markup = '';
-  $data = series_poc_get_work_data();
-  if (in_array($pid, $data->works)) {
-    $work = series_poc_get_work($pid);
-    if (isset($work->series_memberships)) {
-      foreach ($work->series_memberships as $member_ship) {
-        $vars = get_object_vars($member_ship);
-        $title = array_keys($vars)[0];
-        $number = $vars[$title][0];
-        $options = array(
-          'html' => TRUE,
-          'query' => array('series' => $title),
-        );
-        $markup .= '<div class="series-poc-search-series">' . $number . '. del af ' . l($title, '/serier', $options) . '</div>';
-      }
-    }
-    if (isset($work->universe_title)) {
-      $options = array(
-        'html' => TRUE,
-        'query' => array('universe' => $work->universe_title),
-      );
-      $universe_string = ' universet: ';
-      if (strpos(strtolower($work->universe_title), 'universe') !== false) {
-        $universe_string = '';
-      }
-
-      $markup .= '<div class="series-poc-search-universe">Del af ' . $universe_string  . l($work->universe_title, '/serier', $options) . '</div>';
-    }
-    return $markup;
-  } else {
-    return null;
-  }
-}
-
-function series_poc_get_work_data()
-{
-  $data = variable_get('series_poc_work_data', null);
-  if (isset($data)) {
-    return $data;
-  } else {
-    $results = series_poc_request('pid-all', '');
-    variable_set('series_poc_work_data', $results);
-    return $results;
-  }
+  return l($title, 'serier', $options);
 }
 
 function series_poc_show_series_on_object($object)
 {
-  if (!isset($object)) {
-    return '';
-  }
-  $result = '';
-  $work = series_poc_get_object_series_from_api($object);
-  foreach ($work->series as $series_item) {
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/object2.txt", print_r($work, TRUE), FILE_APPEND);
-
-    $item = new SeriesObject();
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/object1.txt", print_r($object, TRUE), FILE_APPEND);
-    $item->covers = series_poc_get_covers_on_object($series_item, $work);
-    file_put_contents("/var/www/drupalvm/drupal/web/debug/object10.txt", print_r($item, TRUE), FILE_APPEND);
-    $options = array(
-      'html' => TRUE,
-      'query' => ['series' => $series_item->title],
-    );
-
-    $item->title = l($series_item->title, 'serier', $options);
-    $item->abstract = $series_item->description;
-    if (isset($series_item->universe_title)) {
-      $item->universe = series_poc_get_universe_title($series_item);
-    } else {
-      $item->universe = '';
-    }
-    $item->type = 'Serie';
-    if (isset($series_item->read_first) && $series_item->read_first) {
-      $item->read_first = "Læs denne serie først";
-    }
-
-    $result .= theme('series_poc_object', array('item' => $item));
-  }
-  return $result;
+  $seriesOnObjects = new SeriesOnObjects();
+  return $seriesOnObjects->render_series_on_object($object);
 }
 
-function series_poc_get_covers_on_object($series_item, $work)
-{
-  $items = [];
-  $cover_objects = series_poc_get_next_series_objects($series_item, $work);
-  
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/object7.txt", print_r($cover_objects , TRUE), FILE_APPEND);
-  foreach ($cover_objects as $cover_object) {
-    $items[] = series_poc_create_cover_object($cover_object, $series_item);
-  }
-  return $items;
-}
-
-function series_poc_create_cover_object($cover_object, $series_item)
-{
-  $cover_item = new stdClass();
-  $cover_item->cover = series_poc_render_cover_object($cover_object);
-  $cover_item->title = $cover_object->work_metadata->title_full[0];
-  $number = series_poc_get_number_in_series($cover_object, $series_item->title);
-  if (isset($number)) {
-    $cover_item->number = $number;
-  }
-  if (isset($cover_object->read_next)) {
-    $cover_item->read_next = "Læs denne som den næste";
-  }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/object11.txt", print_r($cover_item , TRUE), FILE_APPEND);
-  return theme('series_poc_object_item', array('item' => $cover_item));
-}
-
-function series_poc_render_cover_object($cover_object)
-{
-  $object = new CoverObject();
-  $object->id = $cover_object->work_id;
-  $object->title = $cover_object->work_metadata->title_full[0];
-  $object->creators = [];
-  return series_poc_render_cover($object);
-}
-
-function series_poc_get_next_series_objects($series_item, $work)
-{
-  $number = series_poc_get_number_in_series($work, $series_item->title);
-  if (isset($number)) {
-    return series_poc_get_next_series_objects_in_order($series_item, $number);
-  } else {
-    return array_slice($series_item->objects, 0, 3);
-  }
-}
-
-function series_poc_get_next_series_objects_in_order($series_item, $number)
-{
-  $cover_objects = [];
-  $found = false;
-  foreach ($series_item->objects as $object) {
-    $object_number = series_poc_get_number_in_series($object, $series_item->title);
-    if ($object_number == $number) {
-      $found = true;
-    }
-    if ($object_number == $number + 1) {
-      $object->read_next = true;
-    }
-    if ($found) {
-      $cover_objects[] = $object;
-    }
-  }
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/object5.txt", print_r($cover_objects , TRUE), FILE_APPEND);
-  return array_slice($cover_objects, 0, 3);
-}
-
-
-function series_poc_get_object_series_from_api($object)
-{
-  $work = series_poc_get_work($object->id);
-  $work->series = [];
-  if (isset($work->series_memberships)) {
-    foreach ($work->series_memberships as $member_ship) {
-      $vars = get_object_vars($member_ship);
-      $title = array_keys($vars)[0];
-      $work->series[] = series_poc_get_works_in_series($title);
-    }
-  }
-  return $work;
+function series_poc_check_work_is_in_example($pid) {
+  $seriesOnObjects = new SeriesOnObjects();
+  return $seriesOnObjects->check_work_is_in_example($pid);
 }
 
 

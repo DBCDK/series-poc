@@ -6,3 +6,8 @@ core = 7.x
 dependencies[] = ting
 dependencies[] = search
 stylesheets[all][] = css/series_poc.css
+files[]=src/SeriesOnObjects.php
+files[]=src/SeriesServiceClient.php
+
+
+
