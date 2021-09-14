@@ -8,6 +8,9 @@ dependencies[] = search
 stylesheets[all][] = css/series_poc.css
 files[]=src/SeriesOnObjects.php
 files[]=src/SeriesServiceClient.php
+files[]=src/Series.php
+files[]=src/Universe.php
+files[]=src/Menu.php
 
 
 

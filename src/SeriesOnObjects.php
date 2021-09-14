@@ -22,39 +22,37 @@ class SeriesOnObjects
     }
 
     public function check_work_is_in_example($pid)
-    {
-        $markup = '';
+    {    
         if ($this->isInExampleData($pid)) {
-            $client = new SeriesServiceClient();
-            $work = $client->get_work($pid);
-            if (isset($work->series_memberships)) {
-                foreach ($work->series_memberships as $member_ship) {
-                    $vars = get_object_vars($member_ship);
-                    $title = array_keys($vars)[0];
-                    $number = $vars[$title][0];
-                    $options = array(
-                        'html' => TRUE,
-                        'query' => array('series' => $title),
-                    );
-                    $markup .= '<div class="series-poc-search-series">' . $number . '. del af ' . l($title, '/serier', $options) . '</div>';
-                }
-            }
-            if (isset($work->universe_title)) {
-                $options = array(
-                    'html' => TRUE,
-                    'query' => array('universe' => $work->universe_title),
-                );
-                $universe_string = ' universet: ';
-                if (strpos(strtolower($work->universe_title), 'universe') !== false) {
-                    $universe_string = '';
-                }
-
-                $markup .= '<div class="series-poc-search-universe">Del af ' . $universe_string  . l($work->universe_title, '/serier', $options) . '</div>';
-            }
-            return $markup;
+          return $this->renderMarkup($pid);
         } else {
             return null;
         }
+    }
+
+    private function renderMarkup($pid)
+    {
+        $markup = '';
+        $client = new SeriesServiceClient();
+        $work = $client->get_work($pid);
+        if (isset($work->series_memberships)) {
+            foreach ($work->series_memberships as $member_ship) {
+                $vars = get_object_vars($member_ship);
+                $title = array_keys($vars)[0];
+                $number = $vars[$title][0];
+                $link = series_poc_create_link($title, ['series' => $title]);
+                $markup .= '<div class="series-poc-search-series">' . $number . '. del af ' . $link  . '</div>';
+            }
+        }
+        if (isset($work->universe_title)) {
+            $universe_string = ' universet: ';
+            if (strpos(strtolower($work->universe_title), 'universe') !== false) {
+                $universe_string = '';
+            }
+            $link = series_poc_create_link($work->universe_title, ['universe' => $work->universe_title]);
+            $markup .= '<div class="series-poc-search-universe">Del af ' . $universe_string  . $link . '</div>';
+        }
+        return $markup;
     }
 
     private function isInExampleData($pid): bool
@@ -75,7 +73,7 @@ class SeriesOnObjects
         $item->abstract = $series_item->description;
 
         if (isset($series_item->universe_title)) {
-            $item->universe = series_poc_get_universe_title($series_item);
+            $item->universe = Series::get_universe_title($series_item);
         } else {
             $item->universe = '';
         }
@@ -124,24 +122,24 @@ class SeriesOnObjects
 
     private function get_next_series_objects($series_item, $work)
     {
-        $number = series_poc_get_number_in_series($work, $series_item->title);
-        if (isset($number)) {
-            return $this->get_next_series_objects_in_order($series_item, $number);
+        $number_in_series = series_poc_get_number_in_series($work, $series_item->title);
+        if (isset($number_in_series)) {
+            return $this->get_next_series_objects_in_order($series_item, $number_in_series);
         } else {
             return array_slice($series_item->objects, 0, 3);
         }
     }
 
-    private function get_next_series_objects_in_order($series_item, $number)
+    private function get_next_series_objects_in_order($series_item, $number_in_series)
     {
         $cover_objects = [];
         $found = false;
         foreach ($series_item->objects as $object) {
-            $object_number = series_poc_get_number_in_series($object, $series_item->title);
-            if ($object_number == $number) {
+            $object_number_in_series = series_poc_get_number_in_series($object, $series_item->title);
+            if ($object_number_in_series  == $number_in_series) {
                 $found = true;
             }
-            if ($object_number == $number + 1) {
+            if ($object_number_in_series == $number_in_series + 1) {
                 $object->read_next = true;
             }
             if ($found) {
