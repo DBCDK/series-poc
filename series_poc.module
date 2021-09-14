@@ -148,43 +148,28 @@ function series_poc_ctools_plugin_directory($module, $plugin)
 function series_poc_search()
 {
   $parameters = drupal_get_query_parameters();
-  $select = '';
-  $client = new SeriesServiceClient();
-  $menuObject = new Menu();
+  $controller = new SeriesController();
+
 
   if (isset($parameters['series'])) {
-    $series_data_from_api = $client->get_works_in_series($parameters['series']);
-    $series = new Series();
-    $items = $series->handle_series($series_data_from_api);
-    $menu = $menuObject->handle_menu_series($series_data_from_api);
-    $bread_crumb = series_poc_get_breadcrumb($series_data_from_api);
-  } else if (isset($parameters['universe'])) {
-    $universe_data_from_api = $client->get_universe_with_series($parameters['universe']);
-    $universe = new Universe();
-    $items = $universe->handle_universe($universe_data_from_api);
-    $menu = $menuObject->handle_menu_universe($universe_data_from_api);
-    $bread_crumb = series_poc_get_breadcrumb($universe_data_from_api, true);
-  } else {
+    $render_item = $controller->handle_series($parameters);
 
+  } else if (isset($parameters['universe'])) {
+    $render_item = $controller->handle_universe($parameters);
+
+  } else {
     if (isset($parameters['show']) && $parameters['show'] == 'universe') {
-      $all_universes = $client->get_all_series('universe');
-      $universe = new Universe();
-      $items = $universe->show_all_universes($all_universes);
-      $menu = $menuObject->handle_menu_categories();
-      $bread_crumb = series_poc_get_breadcrumb();
+      $render_item = $controller->handle_universe_overview($parameters);
+
     } else {
-      $series = new Series();
-      $all_series = $client->get_all_series('series');
-      $items = $series->show_all_series($all_series);
-      $menu = $menuObject->handle_menu_categories();
-      $bread_crumb = series_poc_get_breadcrumb();
-      $select = series_poc_get_select(false);
+      $render_item = $controller->handle_series_overview($parameters);
     }
   }
 
   drupal_add_js(drupal_get_path('module', 'ting_covers') . '/js/ting-covers.js');
-  return theme('series_poc_page', array('items' => $items, 'breadcrumb' => $bread_crumb, 'menu' => $menu, 'select' => $select));
+  return theme('series_poc_page', array('items' => $render_item->items, 'breadcrumb' => $render_item->breadcrumb, 'menu' => $render_item->menu, 'select' => $render_item->select));
 }
+
 
 function series_poc_get_select($is_universe)
 {
@@ -287,7 +272,8 @@ function series_poc_show_series_on_object($object)
   return $seriesOnObjects->render_series_on_object($object);
 }
 
-function series_poc_check_work_is_in_example($pid) {
+function series_poc_check_work_is_in_example($pid)
+{
   $seriesOnObjects = new SeriesOnObjects();
   return $seriesOnObjects->check_work_is_in_example($pid);
 }
@@ -322,216 +308,10 @@ class CoverObject
   }
 }
 
-function series_poc_get_category_data()
+class RenderItem
 {
-  $data = array(
-    'Aske i munden, sand i skoen' => array(
-      'category' => 'romaner'
-    ),
-
-    'Renée Ballard-serien' => array(
-      'category' => 'krimi'
-    ),
-
-    'Harry Bosch-serien' => array(
-      'category' => 'krimi'
-    ),
-
-    'Harry Potter' => array(
-      'category' => 'fantasy'
-    ),
-
-    'The Harry Potter series' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Fantastic beasts (film)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Fantastic beasts (filmmanuskript)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Harry Potter (film)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'WOW - vild viden' => array(
-      'category' => 'fag'
-    ),
-
-    'De 5' => array(
-      'category' => 'børn'
-    ),
-
-    'De 5 (samling)' => array(
-      'category' => 'børn'
-    ),
-
-    'Tænkepauser' => array(
-      'category' => 'fag'
-    ),
-
-    'Totemdyrenes fald' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Totemdyrenes saga' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Kongens ranger' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Våbenbrødre' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Skyggens lærling' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Den sidste inkal' => array(
-      'category' => 'romaner'
-    ),
-
-    'Før inkalen' => array(
-      'category' => 'romaner'
-    ),
-
-    'Teknofædrene' => array(
-      'category' => 'romaner'
-    ),
-
-    'Megalex' => array(
-      'category' => 'romaner'
-    ),
-
-    'Metabaronernes kaste - Castaka' => array(
-      'category' => 'romaner'
-    ),
-
-    'Metabaronernes kaste' => array(
-      'category' => 'romaner'
-    ),
-
-    'John Difools hemmlighed' => array(
-      'category' => 'romaner'
-    ),
-
-    'Inkalen' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Skøre facts' => array(
-      'category' => 'fag'
-    ),
-
-    'Vide verden' => array(
-      'category' => 'fag'
-    ),
-
-    'Rose-serien' => array(
-      'category' => 'børn'
-    ),
-
-    'Cirklen åbnes' => array(
-      'category' => 'børn'
-    ),
-
-    'Løvindens sang' => array(
-      'category' => 'børn'
-    ),
-
-    'Magiens cirkel' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Asta' => array(
-      'category' => 'børn'
-    ),
-
-    'Hårdes saga' => array(
-      'category' => 'børn'
-    ),
-
-    'Wimpy Kid-serien' => array(
-      'category' => 'børn'
-    ),
-
-    'Rowleys dagbog' => array(
-      'category' => 'børn'
-    ),
-
-    'Den der lever stille' => array(
-      'category' => 'romaner'
-    ),
-
-    'Skyggernes kniv (tegneserie)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'His dark materials (tegneserie)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'His dark materials' => array(
-      'category' => 'fantasy'
-    ),
-
-    'His dark materials (Sæson 1)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Det gyldne kompas (tegneserie)' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Forestillinger om Støv' => array(
-      'category' => 'fantasy'
-    ),
-
-    'The book of dust' => array(
-      'category' => 'fantasy'
-    ),
-
-    'Det gyldne kompas' => array(
-      'category' => 'fantasy'
-    ),
-
-
-    'Cirklen universet' => array(
-      'category' => 'fantasy'
-    ),
-    'His dark materials' => array(
-      'category' => 'fantasy'
-    ),
-    'Inkal-sagaen' => array(
-      'category' => 'romaner'
-    ),
-    'Jodoverset' => array(
-      'category' => 'romaner'
-    ),
-    'Michael Connellys krimi-univers' => array(
-      'category' => 'krimi'
-    ),
-    'Skandia' => array(
-      'category' => 'fantasy'
-    ),
-    'Spirit animals' => array(
-      'category' => 'fantasy'
-    ),
-    'Tortall universet' => array(
-      'category' => 'fantasy'
-    ),
-    'Wimpy Kid' => array(
-      'category' => 'børn'
-    ),
-    'Wizarding World' => array(
-      'category' => 'fantasy'
-    ),
-  );
-  return $data;
+  public $items;
+  public $menu;
+  public $breadcrumb;
+  public $select = '';
 }

@@ -11,6 +11,7 @@ files[]=src/SeriesServiceClient.php
 files[]=src/Series.php
 files[]=src/Universe.php
 files[]=src/Menu.php
+files[]=src/SeriesController.php
 
 
 

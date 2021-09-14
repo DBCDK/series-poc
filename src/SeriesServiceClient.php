@@ -96,7 +96,7 @@ class SeriesServiceClient
             if (isset($param['category'])) {
                 $category = $param['category'];
                 $cat_series = [];
-                foreach (series_poc_get_category_data() as $key => $title) {
+                foreach (Menu::get_category_data() as $key => $title) {
                     if ($title['category'] == $category) {
                         $cat_series[] = $key;
                     }
