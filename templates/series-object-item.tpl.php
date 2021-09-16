@@ -20,12 +20,6 @@
       <?php print $item->cover ?>
     </div>
 
-    <?php if (isset($item->number)) : ?>
-      <div class="ting-series-object-number">
-        <h2><?php print $item->number ?></h2>
-      </div>
-    <?php endif; ?>
-
     <div class="ting-series-object-title">
       <h2><?php print $item->title ?></h2>
     </div>

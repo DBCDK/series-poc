@@ -808,3 +808,77 @@ ul.series-menu-sub-level > li.series-menu-item-active > a{
     display: none;
 }
 
+.ting-series-object {
+	display: flex;
+}
+
+.ting-series-object-items {
+	display: flex;
+	justify-content: space-between;
+	list-style: none;
+    width: 65%;
+    gap: 20px;
+    padding-left: 0px;
+}
+.ting-series-object .ting-series-object-content {
+    width: 35%;
+    margin-left: 30px;
+    height: 327px;
+}
+
+.ting-series-object .ting-series-object-cover {
+    width: 100%;
+}
+
+.ting-series-object-items  .ting-series-object-title h2 {
+    font-size: 16px;
+}
+
+.ting-series-on-object-title {
+	display: flex;
+	justify-content: space-between;
+}
+
+.ting-series-on-object-title h2 {
+    font-size: 36px;
+}
+
+.ting-series-object-item {
+	width: 225px;
+}
+
+.ting-series-object-item img{
+	width: 100%;
+}
+
+.ting-series-object-type {
+	background-color: #005f8c;
+	color: #fff;
+	height: 40px;
+	width: 120px;
+	padding-top: 12px;
+	display: flex;
+	justify-content: center;
+	margin-top: -20px;
+}
+
+.ting-series-object-universe {
+	margin-top: 30px;
+}
+
+.ting-series-object-action {
+	background-color: #005f8c;	
+	border-radius: 5px;
+	display: block;
+	font-size: 1em;
+    width: 80%;
+    align-self: flex-end;
+    margin-top: auto;
+    display: flex; 
+    height: 60px;
+}
+
+.ting-series-object-action a {
+    color: #fff;
+    margin: auto;
+}

@@ -78,6 +78,7 @@ class SeriesOnObjects
             $item->universe = '';
         }
         $item->type = 'Serie';
+        $item->actionButton = series_poc_create_link('Se hele serien', ['series' => $series_item->title]);
 
         if (isset($series_item->read_first) && $series_item->read_first) {
             $item->read_first = "Læs denne serie først";
@@ -103,7 +104,7 @@ class SeriesOnObjects
         $cover_item->title = $cover_object->work_metadata->title_full[0];
         $number = series_poc_get_number_in_series($cover_object, $series_item->title);
         if (isset($number)) {
-            $cover_item->number = $number;
+            $cover_item->title  = $number . '. ' . $cover_item->title ;
         }
         if (isset($cover_object->read_next)) {
             $cover_item->read_next = "Læs denne som den næste";
