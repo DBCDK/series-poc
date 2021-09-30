@@ -201,9 +201,9 @@ class SeriesServiceClient
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Accept: application/json'
-            )
+            ),
+            CURLOPT_SSL_VERIFYPEER, 0,
         );
-
         $curl_session['options'] = $curl_options;
         return $curl_session;
     }
