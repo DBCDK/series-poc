@@ -14,9 +14,9 @@
 
 
 <?php if ($item) : ?>
-  <li class="ting-series-object-item">
+  <!-- <li class="ting-series-object-item"> -->
 
-    <div class="ting-series-object-cover">
+    <div class="ting-series-object-cover <?php print $item->currentClass ?> ">
       <?php print $item->cover ?>
     </div>
 
@@ -28,6 +28,6 @@
         <?php print $item->read_next ?>
       <?php endif; ?>
     </div>
-  </li>
+  <!-- </li> -->
 
 <?php endif; ?>

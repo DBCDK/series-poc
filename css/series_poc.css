@@ -882,3 +882,26 @@ ul.series-menu-sub-level > li.series-menu-item-active > a{
     color: #fff;
     margin: auto;
 }
+
+.ding-carousel-item .ting-series-object-cover {
+    width: 100%;
+
+}
+
+.ding-carousel-item  .ting-series-object-title h2 {
+    font-size: 16px;
+}
+
+.pane-series .carousel-tabs .carousel-list-tabs .carousel-item a {
+    font-size: 36px;
+}
+
+.pane-series .ding-carousel .slick-slider .slick-track .slick-slide {
+    width: 200px;
+}
+
+/* .ting-series-object-cover.ting-series-object-current {
+	outline: 5px solid #005f8c;
+	margin-top: 5px;
+	margin-left: 5px;
+} */

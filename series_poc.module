@@ -272,6 +272,12 @@ function series_poc_show_series_on_object($object)
   return $seriesOnObjects->render_series_on_object($object);
 }
 
+function series_poc_show_series_in_carousel($object)
+{
+  $seriesOnObjects = new SeriesOnObjects();
+  return $seriesOnObjects->render_series_in_carousel($object);
+}
+
 function series_poc_check_work_is_in_example($pid)
 {
   $seriesOnObjects = new SeriesOnObjects();

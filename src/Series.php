@@ -21,7 +21,7 @@ class Series
         return theme('series_poc_main_all', array('items' => $items));
     }
 
-    function show_all_series_item($series_item)
+    function show_all_series_item($series_item, $on_universe = false)
     {
         $item = new SeriesObject();
 
@@ -44,7 +44,11 @@ class Series
         $item->title = l($series_item->title, 'serier', $options);
         $item->abstract = $series_item->description;
         if (isset($series_item->universe_title)) {
-            $item->universe = self::get_universe_title($series_item);
+            if ($on_universe) {
+                $item->universe = self::get_universe_title_link_to_series($series_item);
+            } else {
+                $item->universe = self::get_universe_title($series_item);
+            }
         } else {
             $item->universe = '';
         }
@@ -145,6 +149,24 @@ class Series
         $options = array(
             'html' => TRUE,
             'query' => array('universe' => $series->universe_title),
+        );
+        $universe_string = ' universet: ';
+        if (strpos(strtolower($series->universe_title), 'universe') !== false) {
+            $universe_string = '';
+        }
+        if (isset($series->number_in_universe)) {
+            $prefix = 'Del ' . $series->number_in_universe . ' af ' . $universe_string;
+        } else {
+            $prefix = 'Del af' . $universe_string;
+        }
+        return l($prefix . $series->universe_title, '/serier', $options);
+    }
+
+    public static function get_universe_title_link_to_series($series)
+    {
+        $options = array(
+            'html' => TRUE,
+            'query' => array('series' => $series->title),
         );
         $universe_string = ' universet: ';
         if (strpos(strtolower($series->universe_title), 'universe') !== false) {

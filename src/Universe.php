@@ -10,7 +10,6 @@ class Universe
 
     function show_all_universes($universes)
     {
-        //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe3.txt", print_r($universes, TRUE), FILE_APPEND);
         $items = [];
         if (isset($universes)) {
             foreach ($universes as $series_item) {
@@ -19,7 +18,6 @@ class Universe
                 }
             }
         }
-        ////file_put_contents("/var/www/drupalvm/drupal/web/debug/universe4.txt", print_r($items, TRUE), FILE_APPEND);
         return theme('series_poc_main_all', array('items' => $items));
     }
 
@@ -29,7 +27,6 @@ class Universe
         $items = [];
         $universe_item->other_language_items  = [];
         $universe->series = $this->sort_series($universe);
-        //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe12.txt", print_r($universe, TRUE), FILE_APPEND);
 
         if (isset($universe->series)) {
             foreach ($universe->series as $series_item) {
@@ -40,9 +37,11 @@ class Universe
                 }
                 $series = new Series();
                 if ($this->is_another_language($series_item)) {
-                    $universe_item->other_language_items[] = $series->show_all_series_item($series_item);
+                    $item = $series->show_all_series_item($series_item, true);
+                    $universe_item->other_language_items[] = $item ;
                 } else {
-                    $items[] = $series->show_all_series_item($series_item);
+                    $item = $series->show_all_series_item($series_item, true);
+                    $items[] = $item;
                 }
             }
         }
@@ -73,7 +72,6 @@ class Universe
             $items = [];
             $series = new Series();
             foreach ($universe->single_works as $work) {
-                //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni1.txt", print_r($work, TRUE), FILE_APPEND);
                 $items[] = $series->handle_series_item($work, '');
             }
             $universe_item->single_works = theme('universe_poc_single_works', array('items' => $items));
@@ -81,6 +79,7 @@ class Universe
 
         return theme('universe_poc_main', array('universe' => $universe_item));
     }
+
 
     function show_all_universes_item($series_item)
     {
@@ -121,7 +120,6 @@ class Universe
         }
         $item->type = 'Univers';
         $item->series = '';
-        //file_put_contents("/var/www/drupalvm/drupal/web/debug/universe5.txt", print_r($item, TRUE), FILE_APPEND);
         return theme('series_poc_all_universe_item', array('item' => $item));
     }
 
@@ -157,7 +155,6 @@ class Universe
         if (in_array($type, ['Bog', 'Tegneserie']) && $language == 'eng') {
             return true;
         }
-        //file_put_contents("/var/www/drupalvm/drupal/web/debug/uni4.txt", print_r($type . ' ' . $language, TRUE), FILE_APPEND);
         return false;
     }
 }

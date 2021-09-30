@@ -21,10 +21,23 @@ class SeriesOnObjects
         return $result;
     }
 
+    public function render_series_in_carousel($object)
+    {
+        $results = [];
+        if (!isset($object)) {
+            return null;
+        }
+        $work = $this->get_object_series_from_api($object);
+        foreach ($work->series as $series_item) {
+            $results[] =  $this->createCarouselItem($series_item, $work);
+        }
+        return $results;
+    }
+
     public function check_work_is_in_example($pid)
-    {    
+    {
         if ($this->isInExampleData($pid)) {
-          return $this->renderMarkup($pid);
+            return $this->renderMarkup($pid);
         } else {
             return null;
         }
@@ -65,10 +78,24 @@ class SeriesOnObjects
         return false;
     }
 
+    private function createCarouselItem($series_item, $work)
+    {
+        $result = $this->get_covers_on_object($series_item, $work, 100);
+        $result->title =  $series_item->title;
+        return $result;
+    }
+
     private function createRenderItem($series_item, $work): SeriesObject
     {
         $item = new SeriesObject();
-        $item->covers = $this->get_covers_on_object($series_item, $work);
+        $covers = $this->get_covers_on_object($series_item, $work, 100);
+        $item->covers = array_slice($covers->items, $covers->start, 3);
+
+        $covers = [];
+        foreach ($item->covers as $cover) {
+            $covers[] = '<li class="ting-series-object-item">' . $cover . '</li>';
+        }
+        $item->covers = $covers;
         $item->title = series_poc_create_link($series_item->title, ['series' => $series_item->title]);
         $item->abstract = $series_item->description;
 
@@ -86,28 +113,39 @@ class SeriesOnObjects
         return $item;
     }
 
-    private function get_covers_on_object($series_item, $work)
+    private function get_covers_on_object($series_item, $work, $number_off_items)
     {
-        $items = [];
-        $cover_objects = $this->get_next_series_objects($series_item, $work);
+        $result = new stdClass();
+        $result->items = [];
+        $cover_objects = $this->get_next_series_objects($series_item, $work, $number_off_items);
+        $i = 0;
 
         foreach ($cover_objects as $cover_object) {
-            $items[] = $this->create_cover_object($cover_object, $series_item);
+            $result->items[] = $this->create_cover_object($cover_object, $series_item);
+            if (isset($cover_object->current) && $cover_object->current) {
+                $result->start = $i;
+            }
+            $i++;
         }
-        return $items;
+        return $result;
     }
 
     private function create_cover_object($cover_object, $series_item)
     {
         $cover_item = new stdClass();
+        $cover_item->currentClass = '';
         $cover_item->cover = $this->render_cover_object($cover_object);
         $cover_item->title = $cover_object->work_metadata->title_full[0];
         $number = series_poc_get_number_in_series($cover_object, $series_item->title);
         if (isset($number)) {
-            $cover_item->title  = $number . '. ' . $cover_item->title ;
+            $cover_item->title  = $number . '. ' . $cover_item->title;
         }
         if (isset($cover_object->read_next)) {
             $cover_item->read_next = "Læs denne som den næste";
+        }
+        if (isset($cover_object->current)) {
+            $cover_item->read_next = "Aktuel bog";
+            $cover_item->currentClass = "ting-series-object-current";
         }
         return theme('series_poc_object_item', array('item' => $cover_item));
     }
@@ -121,33 +159,46 @@ class SeriesOnObjects
         return series_poc_render_cover($object);
     }
 
-    private function get_next_series_objects($series_item, $work)
+    private function get_next_series_objects($series_item, $work, $number_off_items)
     {
         $number_in_series = series_poc_get_number_in_series($work, $series_item->title);
         if (isset($number_in_series)) {
-            return $this->get_next_series_objects_in_order($series_item, $number_in_series);
+            return $this->get_next_series_objects_in_order($series_item, $number_in_series, $number_off_items);
         } else {
-            return array_slice($series_item->objects, 0, 3);
+            return $this->get_next_series_objects_random_order($series_item, $work,  $number_off_items);
         }
     }
 
-    private function get_next_series_objects_in_order($series_item, $number_in_series)
+    private function get_next_series_objects_random_order($series_item, $work,  $number_off_items)
     {
         $cover_objects = [];
-        $found = false;
+
+        foreach ($series_item->objects as $object) {
+            if ($work->work_id == $object->work_id) {
+                $object->current = true;
+                array_unshift($cover_objects, $object);
+            } else {
+                $cover_objects[] = $object;
+            }
+        }
+        return array_slice($cover_objects, 0, $number_off_items);
+    }
+
+    private function get_next_series_objects_in_order($series_item, $number_in_series, $number_off_items)
+    {
+        $cover_objects = [];
         foreach ($series_item->objects as $object) {
             $object_number_in_series = series_poc_get_number_in_series($object, $series_item->title);
             if ($object_number_in_series  == $number_in_series) {
-                $found = true;
+                $object->current = true;
             }
             if ($object_number_in_series == $number_in_series + 1) {
                 $object->read_next = true;
             }
-            if ($found) {
-                $cover_objects[] = $object;
-            }
+
+            $cover_objects[] = $object;
         }
-        return array_slice($cover_objects, 0, 3);
+        return array_slice($cover_objects, 0, $number_off_items);
     }
 
 
