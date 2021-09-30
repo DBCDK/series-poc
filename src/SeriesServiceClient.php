@@ -151,6 +151,7 @@ class SeriesServiceClient
         );
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $curl_response = curl_exec($curl);
+        file_put_contents("/var/www/data/debug/series7.txt", print_r($curl_response , TRUE), FILE_APPEND);
         if ($curl_response === false) {
             $info = curl_getinfo($curl);
             curl_close($curl);
