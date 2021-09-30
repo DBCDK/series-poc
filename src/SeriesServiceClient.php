@@ -140,6 +140,7 @@ class SeriesServiceClient
     {
         $service_url = 'https://series-poc.demo.dbc.dk/';
         $service_url .= $action . '?' . $parameters;
+        file_put_contents("/var/www/data/debug/series8.txt", print_r($service_url , TRUE), FILE_APPEND);
         $curl = curl_init($service_url);
         curl_setopt(
             $curl,
