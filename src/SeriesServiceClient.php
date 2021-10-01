@@ -140,7 +140,6 @@ class SeriesServiceClient
     {
         $service_url = 'https://series-poc.demo.dbc.dk/';
         $service_url .= $action . '?' . $parameters;
-        file_put_contents("/var/www/data/debug/series8.txt", print_r($service_url , TRUE), FILE_APPEND);
         $curl = curl_init($service_url);
         curl_setopt(
             $curl,
@@ -153,7 +152,6 @@ class SeriesServiceClient
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         $curl_response = curl_exec($curl);
-        file_put_contents("/var/www/data/debug/series7.txt", print_r($curl_response , TRUE), FILE_APPEND);
         if ($curl_response === false) {
             $info = curl_getinfo($curl);
             curl_close($curl);
@@ -202,7 +200,6 @@ class SeriesServiceClient
                 'Content-Type: application/json',
                 'Accept: application/json'
             ),
-            CURLOPT_SSL_VERIFYPEER, 0,
         );
         $curl_session['options'] = $curl_options;
         return $curl_session;
